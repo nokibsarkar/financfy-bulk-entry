@@ -73,7 +73,6 @@ Financfy is an independent software solution that integrates modern UI/UX princi
 
 **3.3 Cashbook Management**  
 - **Attributes**:  
-  - Current balance.  
   - Total transactions.  
   - Last transaction timestamp.  
   - Currency.  
@@ -93,6 +92,8 @@ Financfy is an independent software solution that integrates modern UI/UX princi
   - Current Running Net Balance.  
   - Current Running Opening Balance.  
   - Associated cashbook.  
+
+  - Past transaction
 - **Add Transactions**: Input sender, receiver, amount, category, remarks, voucher number, and cashbook association.  
 - **Search and Filter**:  
   - Filter transactions by date, category, sender, receiver, voucher number, or cashbook.  
