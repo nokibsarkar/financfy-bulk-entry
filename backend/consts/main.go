@@ -48,5 +48,4 @@ func (c *Configuration) LoadConfig(path string) *Configuration {
 	}
 	loadedConfig = c
 	return loadedConfig
-
 }

@@ -5,12 +5,17 @@
 package database
 
 import (
-	"gorm.io/driver/sqlite"
+	"log"
+
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+var connString = "host=localhost user=postgres password=KothinKichu dbname=financify port=5432 sslmode=disable"
+
 func GetDatabaseConnection() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	pgst := postgres.Open(connString)
+	db, err := gorm.Open(pgst, &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -18,8 +23,10 @@ func GetDatabaseConnection() *gorm.DB {
 }
 func init() {
 	//
+	log.Println("Creating database schema")
 	db := GetDatabaseConnection()
 	db.AutoMigrate(&Cashbook{})
 	db.AutoMigrate(&Transaction{})
 	db.AutoMigrate(&CashFlow{})
+	log.Println("Database schema created")
 }

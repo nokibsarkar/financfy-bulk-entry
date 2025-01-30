@@ -10,22 +10,17 @@ import (
 
 type CashFlowRepository struct{}
 
-func (c *CashFlowRepository) CreateOrUpdateCashFlowByDate(db *gorm.DB, cashflow *models.CashflowSingle) (*models.CashflowSingle, error) {
-	// This function is used to create or update the CashFlow
-	cashfl := &database.CashFlow{}
-	result := db.Where(database.CashFlow{Date: cashflow.Date, CashbookID: cashflow.CashbookID}).First(cashfl)
+// This function is used to create or update the CashFlow
+func (c *CashFlowRepository) CreateOrUpdateCashFlow(db *gorm.DB, cashflow *models.CashflowSingle) (*models.CashflowSingle, error) {
+	cashflow_in_db := &database.CashFlow{Date: cashflow.Date, CashbookID: cashflow.CashbookID}
+	result := db.Where(cashflow_in_db).First(cashflow_in_db)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
-			// Create a new CashFlow
-			newCashFlow := &database.CashFlow{
-				CashbookID:    cashflow.CashbookID,
-				TotalIncoming: cashflow.TotalIncoming,
-				TotalOutgoing: cashflow.TotalOutgoing,
-				TotalBalance:  cashflow.TotalBalance,
-				Date:          cashflow.Date,
-				ID:            snowflake.ID(),
-			}
-			result := db.Create(newCashFlow)
+			cashflow_in_db.ID = snowflake.ID()
+			cashflow_in_db.TotalIncoming = cashflow.TotalIncoming
+			cashflow_in_db.TotalOutgoing = cashflow.TotalOutgoing
+			cashflow_in_db.TotalBalance = cashflow.TotalBalance
+			result := db.Create(cashflow_in_db)
 			if result.Error != nil {
 				return nil, result.Error
 			}
@@ -35,10 +30,10 @@ func (c *CashFlowRepository) CreateOrUpdateCashFlowByDate(db *gorm.DB, cashflow 
 		}
 	}
 	// Update the existing CashFlow
-	cashfl.TotalIncoming += cashflow.TotalIncoming
-	cashfl.TotalOutgoing += cashflow.TotalOutgoing
-	cashfl.TotalBalance += cashflow.TotalBalance
-	result = db.Save(cashfl)
+	cashflow_in_db.TotalIncoming += cashflow.TotalIncoming
+	cashflow_in_db.TotalOutgoing += cashflow.TotalOutgoing
+	cashflow_in_db.TotalBalance += cashflow.TotalBalance
+	result = db.Save(cashflow_in_db)
 	if result.Error != nil {
 		return nil, result.Error
 	}

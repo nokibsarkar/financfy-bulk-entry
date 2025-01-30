@@ -60,7 +60,7 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 	if err != nil {
 		return nil
 	}
-	_, err = cashflow_repo.CreateOrUpdateCashFlowByDate(db, cashflowUpdate)
+	_, err = cashflow_repo.CreateOrUpdateCashFlow(db, cashflowUpdate)
 	if err != nil {
 		return nil
 	}
@@ -84,11 +84,13 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 		SuccessCount: 0,
 		FailedCount:  0,
 	}
-
+	// track which cashflow needs to be updated
 	cashflowChanges := map[string]*models.CashflowSingle{}
 	for _, transaction := range transactions {
+		// check if the cashflow for that date already exists
 		existingCashflow, ok := cashflowChanges[transaction.Date]
 		if !ok {
+			// if not create a new cashflow
 			existingCashflow = &models.CashflowSingle{
 				CashbookID:    transaction.CashbookID,
 				TotalIncoming: 0.00,
@@ -98,9 +100,11 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 			}
 		}
 		if transaction.Type == "cashin" {
+			// update the cashflow
 			existingCashflow.TotalIncoming += transaction.Amount
 			existingCashflow.TotalBalance += transaction.Amount
 		} else {
+			// update the cashflow
 			existingCashflow.TotalOutgoing += transaction.Amount
 			existingCashflow.TotalBalance -= transaction.Amount
 		}
@@ -117,7 +121,7 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 		log.Fatalln(err)
 	}
 	for _, cashflow := range cashflowChanges {
-		_, err := cashflow_repo.CreateOrUpdateCashFlowByDate(db, cashflow)
+		_, err := cashflow_repo.CreateOrUpdateCashFlow(db, cashflow)
 		if err != nil {
 			resp.FailedCount++
 		}
