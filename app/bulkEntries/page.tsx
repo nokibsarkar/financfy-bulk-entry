@@ -1,0 +1,74 @@
+import React from 'react' 
+export default function User() {
+  return (      
+         <main className='text-black bg-white ml-48' >
+          <div className=" w-full h-screen bg-white p-6 ">
+<h2 className="text-lg mb-4">Add Bulk Transaction Entries</h2>
+
+<div className="grid grid-cols-2 gap-4 mb-4 text-xs">
+    <div>
+        <label className="block text-sm font-medium">Date & Time *</label>
+        <input type="datetime-local" className="mt-1 w-full p-2 border rounded" />
+    </div>
+    <div>
+        <label className="block text-sm font-medium">Voucher Number *</label>
+        <input type="number" className="mt-1 w-full p-2 border rounded" defaultValue="2" />
+    </div>
+</div>
+
+<table className="w-full border-collapse border rounded-lg overflow-hidden">
+    <thead>
+        <tr className="bg-gray-200 text-xs">
+            <th className="p-2">#</th>
+            <th className="p-2">Amount *</th>
+            <th className="p-2">Type *</th>
+            <th className="p-2">Contact</th>
+            <th className="p-2">Category *</th>
+            <th className="p-2">Payment Mode *</th>
+            <th className="p-2">Remarks</th>
+            <th className="p-2">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr className="border-b text-xs">
+            <td className="p-2">1</td>
+            <td className="p-2"><input type="number" className="w-full p-1 border rounded" /></td>
+            <td className="p-2"><select className="w-full p-1 border rounded">
+                <option>Select...</option>
+                <option>Cash In</option>
+                <option>Cash Out</option>
+                </select></td>
+            <td className="p-2"><select className="w-full p-1 border rounded">
+                <option>Select...</option>
+                <option>Mst Rukaiya Islam Tonni</option>
+                </select></td>
+            <td className="p-2"><select className="w-full p-1 border rounded">
+                <option>Select...</option>
+                <option>Salary</option>
+                </select></td>
+            <td className="p-2"><select className="w-full p-1 border rounded">
+                <option>Select...</option>
+                <option>Cash</option>
+                <option>Online method</option>
+                <option>Bank</option>
+                </select></td>
+            <td className="p-2"><input type="text" className="w-full p-1 border rounded" placeholder="Enter remarks" /></td>
+            <td className="p-2 text-center">
+                <button className="text-red-500">X</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div className="mt-4 flex justify-end gap-4 text-xs">
+    <button className="px-4 py-2 bg-red-500 text-white rounded">Reset</button>
+        <button className="px-4 py-2 bg-blue-500 text-white rounded">Save and Print</button>
+        <button className="px-4 py-2 bg-green-500 text-white rounded">Add Row</button>
+   
+</div>
+</div>
+
+         </main>
+
+);
+}
