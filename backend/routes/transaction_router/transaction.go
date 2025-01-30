@@ -55,7 +55,7 @@ func GetSingleTransaction(c *gin.Context) {
 		Reference:  "Ref-1234",
 		Remarks:    "Sample Transaction",
 	}
-	response := models.ResponseSingle[models.TransactionSingle]{Data: sampleTransaction, Error: ""}
+	response := models.ResponseSingle[models.TransactionSingle]{Data: &sampleTransaction, Error: ""}
 	c.JSON(200, response)
 }
 

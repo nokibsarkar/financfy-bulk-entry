@@ -11,16 +11,26 @@ func ListAllCashBooks(c *gin.Context) {
 	// This function is used to list all the cashbooks of that specific user
 	// return
 	service := cashbook_service.CashBookService{}
-	sampleCashbook := service.GetCashBook()
+	sampleCashbook := service.ListCashbooks()
 	response := models.ResponseMultiple[models.CashbookSingle]{
-		Data:  []models.CashbookSingle{sampleCashbook},
+		Data:  sampleCashbook,
 		Error: "",
 	}
 	c.JSON(200, response)
 }
-func CreateCashBook(*gin.Context) {
+func CreateCashBook(c *gin.Context) {
 	// This function is used to create a new cashbook
 	// return
+	newCashbookInp := models.CreateCashBookInput{}
+	if err := c.BindJSON(&newCashbookInp); err != nil {
+		resp := models.ResponseSingle[models.CashbookSingle]{Data: nil, Error: err.Error()}
+		c.JSON(400, resp)
+		return
+	}
+	service := cashbook_service.CashBookService{}
+	newCashbook := service.CreateCashbook(newCashbookInp)
+	response := models.ResponseSingle[models.CashbookSingle]{Data: &newCashbook, Error: ""}
+	c.JSON(200, response)
 }
 func UpdateSingleCashBook(*gin.Context) {
 	// This function is used to update a cashbook
@@ -31,9 +41,13 @@ func DeleteSingleCashBook(*gin.Context) {
 	// return
 }
 
-func GetSingleCashBook(*gin.Context) {
+func GetSingleCashBook(c *gin.Context) {
 	// This function is used to get a single cashbook
 	// return
+	service := cashbook_service.CashBookService{}
+	sampleCashbook := service.GetSingleCashBook()
+	response := models.ResponseSingle[models.CashbookSingle]{Data: &sampleCashbook, Error: ""}
+	c.JSON(200, response)
 }
 
 /**
