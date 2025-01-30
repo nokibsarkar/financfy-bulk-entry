@@ -3,6 +3,7 @@ package cashbook_router
 import (
 	"financify/bulk-entry/models"
 	cashbook_service "financify/bulk-entry/services/cashbook"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +30,7 @@ func CreateCashBook(c *gin.Context) {
 	}
 	service := cashbook_service.CashBookService{}
 	newCashbook := service.CreateCashbook(newCashbookInp)
-	response := models.ResponseSingle[models.CashbookSingle]{Data: &newCashbook, Error: ""}
+	response := models.ResponseSingle[models.CashbookSingle]{Data: newCashbook, Error: ""}
 	c.JSON(200, response)
 }
 func UpdateSingleCashBook(*gin.Context) {
@@ -43,10 +44,24 @@ func DeleteSingleCashBook(*gin.Context) {
 
 func GetSingleCashBook(c *gin.Context) {
 	// This function is used to get a single cashbook
-	// return
+	cashbookIdString := c.Param("id")
+	// Convert the string to uint64
+	// If the conversion fails, return an error
+	cashbookId, err := strconv.ParseUint(cashbookIdString, 10, 64)
+	if err != nil {
+		response := models.ResponseSingle[models.CashbookSingle]{Data: nil, Error: err.Error()}
+		c.JSON(400, response)
+		return
+	}
+	// Get the cashbook from the service
 	service := cashbook_service.CashBookService{}
-	sampleCashbook := service.GetSingleCashBook()
-	response := models.ResponseSingle[models.CashbookSingle]{Data: &sampleCashbook, Error: ""}
+	sampleCashbook := service.GetSingleCashBook(cashbookId)
+	if sampleCashbook == nil {
+		response := models.ResponseSingle[models.CashbookSingle]{Data: nil, Error: "Cashbook not found"}
+		c.JSON(404, response)
+		return
+	}
+	response := models.ResponseSingle[models.CashbookSingle]{Data: sampleCashbook, Error: ""}
 	c.JSON(200, response)
 }
 
