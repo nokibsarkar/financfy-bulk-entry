@@ -1,8 +1,10 @@
 package main
 
 import (
+	"financify/bulk-entry/consts"
 	"financify/bulk-entry/routes"
 	"log"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -10,7 +12,10 @@ import (
 )
 
 func main() {
-	// gin.SetMode(gin.ReleaseMode)
+	log.Println("Starting the application...")
+	log.Println("Setting up the configuration...")
+	currentDir, _ := os.Getwd()
+	consts.LoadConfig(currentDir + "/config.yaml")
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},

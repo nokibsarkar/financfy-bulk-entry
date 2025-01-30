@@ -5,28 +5,37 @@
 package database
 
 import (
+	"financify/bulk-entry/consts"
 	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var connString = "host=localhost user=postgres password=KothinKichu dbname=financify port=5432 sslmode=disable"
+var conf = consts.LoadConfig(".")
+var pgst = postgres.Open(conf.DatabaseURL)
 
-func GetDatabaseConnection() *gorm.DB {
-	pgst := postgres.Open(connString)
+func GetDatabaseConnection() (*gorm.DB, func()) {
 	db, err := gorm.Open(pgst, &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	return db
+	raw_db, err := db.DB()
+	if err != nil {
+		panic("failed to get database connection")
+	}
+	return db, func() {
+		raw_db.Close()
+	}
 }
 func init() {
 	//
 	log.Println("Creating database schema")
-	db := GetDatabaseConnection()
+	db, close := GetDatabaseConnection()
+	defer close()
 	db.AutoMigrate(&Cashbook{})
 	db.AutoMigrate(&Transaction{})
 	db.AutoMigrate(&CashFlow{})
 	log.Println("Database schema created")
+
 }

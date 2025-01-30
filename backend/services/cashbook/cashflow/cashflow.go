@@ -12,7 +12,8 @@ type CashFlowService struct {
 
 func (c *CashFlowService) ListCashFlowByCashbookID() []models.CashflowSingle {
 	// List all cashflows by cashbook id
-	db := database.GetDatabaseConnection()
+	db, close := database.GetDatabaseConnection()
+	defer close()
 	var cashflows []database.CashFlow
 	res := db.Where(database.CashFlow{CashbookID: c.CashbookID}).Find(&cashflows)
 	fmt.Println(res)

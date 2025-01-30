@@ -16,7 +16,8 @@ func (c *CashBookService) ListCashbooks() []models.CashbookSingle {
 	// implementatio
 	// iterate over the cashbooks and return them
 	repo := cashbook_repository.CashbookRepository{}
-	db := database.GetDatabaseConnection()
+	db, close := database.GetDatabaseConnection()
+	defer close()
 	cashbooks, _ := repo.LisCashBooks(db)
 	var cashs = make([]models.CashbookSingle, 0)
 	for _, cashbook := range cashbooks {
@@ -47,7 +48,8 @@ func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*model
 		TotalBalance:  0.00,
 	}
 	repo := cashbook_repository.CashbookRepository{}
-	db := database.GetDatabaseConnection()
+	db, close := database.GetDatabaseConnection()
+	defer close()
 	_, err := repo.CreateCashbook(db, &inp)
 	if err != nil {
 		return nil, err

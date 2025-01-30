@@ -55,7 +55,9 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		cashflowUpdate.TotalOutgoing = newTransaction.Amount
 		cashflowUpdate.TotalBalance = -newTransaction.Amount
 	}
-	db := database.GetDatabaseConnection().Begin()
+	conn, close := database.GetDatabaseConnection()
+	defer close()
+	db := conn.Begin()
 	_, err := repo.CreateTransaction(db, newTransaction)
 	if err != nil {
 		return nil
@@ -113,7 +115,9 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 	}
 	repo := transaction_repo.TransactionRepository{}
 	cashflow_repo := cashflow_repo.CashFlowRepository{}
-	db := database.GetDatabaseConnection().Begin()
+	conn, close := database.GetDatabaseConnection()
+	defer close()
+	db := conn.Begin()
 	_a, err := repo.CreateBulkTransactions(db, transactions)
 	_ = _a
 	if err != nil {
@@ -141,7 +145,8 @@ func (t *TransactionService) GetSingleTransaction(id uint64) *models.Transaction
 	return nil
 }
 func (t *TransactionService) ListAllTransactions() ([]models.TransactionSingle, error) {
-	db := database.GetDatabaseConnection()
+	db, close := database.GetDatabaseConnection()
+	defer close()
 	repo := transaction_repo.TransactionRepository{}
 	transactions, err := repo.ListAllTransactions(db)
 	return transactions, err

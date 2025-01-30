@@ -18,7 +18,7 @@ async function newTransaction() {
         "type" : "Cashout",
         "amount": 1000,
         "description": "Salary",
-        "cashbookId": 1
+        "cashbookId": 2147010522703200300
     }
     const res = await fetch(baseURL + "/transaction", {
         "method": "POST",
@@ -72,8 +72,8 @@ for (var i = 0; i < 1000000; i++) {
         break;
     }
     await newTransactions();
-    // await NewCashbook();
-    // await newTransaction();
+    await NewCashbook();
+    await newTransaction();
 }
 console.log(`Inserted ${i * 1} transactions in ${millis} milliseconds`);
 // 60 transactions per second

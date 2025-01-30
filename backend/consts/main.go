@@ -30,7 +30,11 @@ type Configuration struct {
 }
 
 // GetConfig returns the configuration object
-func (c *Configuration) LoadConfig(path string) *Configuration {
+func LoadConfig(path string) *Configuration {
+	if loadedConfig != nil {
+		return loadedConfig
+	}
+	c := &Configuration{}
 	// Load from viper
 	// Set the loadedConfig to the configuration object
 	// now load viper
