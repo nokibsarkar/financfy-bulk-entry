@@ -14,9 +14,8 @@ type AddTransactionFormProps = {
 	category: string;
 	receiveMode: string;
 	cashbookId: number;
-}
+};
 const AddTransactionForm = ({ type, cashbookId = 1 }: { type: string, cashbookId: number }) => {
-
 	const [date, setDate] = useState('');
 	const [voucherNo, setVoucherNo] = useState('');
 	const [amount, setAmount] = useState('');
@@ -26,7 +25,7 @@ const AddTransactionForm = ({ type, cashbookId = 1 }: { type: string, cashbookId
 	const [category, setCategory] = useState<string>('');
 	const [receiveMode, setReceiveMode] = useState('');
 	const [loading, setLoading] = useState<boolean>(false);
-	const saveHandler = (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+	const saveHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const data: AddTransactionFormProps = {
 			"voucherNo": voucherNo,
 			"date": date,
@@ -47,8 +46,8 @@ const AddTransactionForm = ({ type, cashbookId = 1 }: { type: string, cashbookId
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(data)
-		}).then(a => a.json()).then((a : ResponseMultiple<{[k : string] : any}>) => {
-			if(!a.error) {
+		}).then(a => a.json()).then((a: ResponseMultiple<{ [k: string]: any }>) => {
+			if (!a.error) {
 				alert('Transaction saved successfully');
 			} else {
 				throw new Error(a.error);

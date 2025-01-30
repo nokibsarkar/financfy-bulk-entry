@@ -19,7 +19,6 @@ func GetDatabaseConnection() *gorm.DB {
 func init() {
 	//
 	db := GetDatabaseConnection()
-	// fmt.Println("Database connection created", db)
-	// Migrate the schema
 	db.AutoMigrate(&Cashbook{})
+	db.AutoMigrate(&Transaction{})
 }

@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"financify/bulk-entry/models"
+	transaction_repo "financify/bulk-entry/repositories/transaction"
 
 	"github.com/godruoyi/go-snowflake"
 )
@@ -23,7 +24,7 @@ type TransactionService struct{}
 
 func (t *TransactionService) CreateTransaction(transactionInput *models.TransactionSingleInput) *models.TransactionSingle {
 	newTransactionId := snowflake.ID()
-	newTransaction := models.TransactionSingle{
+	newTransaction := &models.TransactionSingleInput{
 		ID:         newTransactionId,
 		VoucherNo:  transactionInput.VoucherNo,
 		Date:       transactionInput.Date,
@@ -33,9 +34,25 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		Reference:  transactionInput.Reference,
 		Remarks:    transactionInput.Remarks,
 		Category:   transactionInput.Category,
+		Type:       transactionInput.Type,
 	}
-	transactionList = append(transactionList, newTransaction)
-	return &newTransaction
+	repo := transaction_repo.TransactionRepository{}
+	_, err := repo.CreateTransaction(newTransaction)
+	if err != nil {
+		return nil
+	}
+	newTransactionSingle := &models.TransactionSingle{
+		ID:         newTransactionId,
+		VoucherNo:  newTransaction.VoucherNo,
+		Date:       newTransaction.Date,
+		Amount:     newTransaction.Amount,
+		Contact:    newTransaction.Contact,
+		CashbookID: newTransaction.CashbookID,
+		Reference:  newTransaction.Reference,
+		Remarks:    newTransaction.Remarks,
+		Category:   newTransaction.Category,
+	}
+	return newTransactionSingle
 }
 func (t *TransactionService) CreateBulkTransactions(transactions []models.TransactionSingleInput) models.BulkTransactionResponse {
 	// Create multiple transactions at once
