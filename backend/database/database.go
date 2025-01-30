@@ -12,17 +12,27 @@ import (
 	"gorm.io/gorm"
 )
 
-var conf = consts.LoadConfig(".")
-var pgst = postgres.Open(conf.DatabaseURL)
+var db *gorm.DB = nil
 
 func GetDatabaseConnection() (*gorm.DB, func()) {
+	if db != nil {
+		raw_db, err := db.DB()
+		if err != nil {
+			panic("failed to connect database")
+		}
+		return db, func() {
+			raw_db.Close()
+		}
+	}
+	var conf = consts.LoadConfig(".")
+	var pgst = postgres.Open(conf.DatabaseURL)
 	db, err := gorm.Open(pgst, &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 	raw_db, err := db.DB()
 	if err != nil {
-		panic("failed to get database connection")
+		panic("failed to get raw database")
 	}
 	return db, func() {
 		raw_db.Close()

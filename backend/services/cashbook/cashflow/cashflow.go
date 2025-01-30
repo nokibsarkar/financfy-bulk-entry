@@ -7,7 +7,7 @@ import (
 )
 
 type CashFlowService struct {
-	CashbookID uint64
+	CashbookID string
 }
 
 func (c *CashFlowService) ListCashFlowByCashbookID() []models.CashflowSingle {

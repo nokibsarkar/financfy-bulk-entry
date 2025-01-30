@@ -32,6 +32,7 @@ func main() {
 		// recover from panic if one occured. Set err to nil otherwise
 		if err := recover(); err != nil {
 			log.Println(err)
+
 		}
 	}()
 	log.Println("Starting the application...")

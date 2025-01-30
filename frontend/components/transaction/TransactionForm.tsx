@@ -64,10 +64,10 @@ const AddTransactionForm = ({ type, cashbookId = 1 }: { type: TransactionType, c
 			<div className="grid grid-cols-2 gap-4">
 				<div>
 					<label className="block text-sm font-medium text-black">
-						Date & time *
+						Date *
 					</label>
 					<input
-						type="datetime-local"
+						type="date"
 						className="w-full mt-1 p-2 border border-gray-300 rounded-md text-xs text-gray-700"
 						value={date}
 						onChange={e => setDate(e.target.value)}

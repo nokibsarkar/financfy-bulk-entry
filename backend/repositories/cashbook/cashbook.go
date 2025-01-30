@@ -3,8 +3,8 @@ package cashbook
 import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	"financify/bulk-entry/services"
 
-	"github.com/godruoyi/go-snowflake"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func (c *CashbookRepository) CreateCashbook(db *gorm.DB, cashbook *models.Create
 		TotalOutgoing: 0,
 		TotalBalance:  0,
 		Currency:      "BDT",
-		ID:            snowflake.ID(),
+		ID:            services.GenerateSnowFlake(),
 	})
 	if result.Error != nil {
 		return nil, result.Error

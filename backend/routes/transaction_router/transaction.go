@@ -3,7 +3,6 @@ package transaction_router
 import (
 	"financify/bulk-entry/models"
 	transaction_service "financify/bulk-entry/services/cashbook/cashflow/transaction"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -63,15 +62,9 @@ func UpdateSingleTransaction(*gin.Context) {
 func GetSingleTransaction(c *gin.Context) {
 	// This function is used to get a single Transaction
 	// return
-	transactionIDString := c.Param("id")
-	// Convert it to uint64
+	// Convert it to string
 	// If the conversion fails, return an error
-	trxID, err := strconv.ParseUint(transactionIDString, 10, 64)
-	if err != nil {
-		response := models.ResponseSingle[models.TransactionSingle]{Data: nil, Error: err.Error()}
-		c.JSON(400, response)
-		return
-	}
+	trxID := c.Param("id")
 	service := transaction_service.TransactionService{}
 	sampleTransaction := service.GetSingleTransaction(trxID)
 	response := models.ResponseSingle[models.TransactionSingle]{Data: sampleTransaction, Error: ""}

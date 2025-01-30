@@ -3,7 +3,6 @@ package cashbook_router
 import (
 	"financify/bulk-entry/models"
 	cashbook_service "financify/bulk-entry/services/cashbook"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,15 +48,10 @@ func DeleteSingleCashBook(*gin.Context) {
 
 func GetSingleCashBook(c *gin.Context) {
 	// This function is used to get a single cashbook
-	cashbookIdString := c.Param("id")
-	// Convert the string to uint64
+	cashbookId := c.Param("id")
+	// Convert the string to string
 	// If the conversion fails, return an error
-	cashbookId, err := strconv.ParseUint(cashbookIdString, 10, 64)
-	if err != nil {
-		response := models.ResponseSingle[models.CashbookSingle]{Data: nil, Error: err.Error()}
-		c.JSON(400, response)
-		return
-	}
+
 	// Get the cashbook from the service
 	service := cashbook_service.CashBookService{}
 	sampleCashbook := service.GetSingleCashBook(cashbookId)

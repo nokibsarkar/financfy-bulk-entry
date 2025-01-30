@@ -5,28 +5,17 @@ import (
 	"financify/bulk-entry/models"
 	cashflow_repo "financify/bulk-entry/repositories/cashflow"
 	transaction_repo "financify/bulk-entry/repositories/transaction"
+	"financify/bulk-entry/services"
+	"time"
+
+	"fmt"
 	"log"
-
-	"github.com/godruoyi/go-snowflake"
 )
-
-var transactionList = []models.TransactionSingle{
-	{
-		ID:         1,
-		VoucherNo:  "1234",
-		Date:       "2021-01-01",
-		Amount:     1000.00,
-		Contact:    "John Doe",
-		CashbookID: 1,
-		Reference:  "Ref-1234",
-		Remarks:    "Sample Transaction",
-	},
-}
 
 type TransactionService struct{}
 
 func (t *TransactionService) CreateTransaction(transactionInput *models.TransactionSingleInput) *models.TransactionSingle {
-	newTransactionId := snowflake.ID()
+	newTransactionId := services.GenerateSnowFlake()
 	newTransaction := &models.TransactionSingleInput{
 		ID:         newTransactionId,
 		VoucherNo:  transactionInput.VoucherNo,
@@ -48,6 +37,7 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		TotalBalance:  0.00,
 		Date:          newTransaction.Date,
 	}
+	fmt.Println(*cashflowUpdate)
 	if newTransaction.Type == "cashin" {
 		cashflowUpdate.TotalIncoming = newTransaction.Amount
 		cashflowUpdate.TotalBalance = newTransaction.Amount
@@ -89,8 +79,14 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 	// track which cashflow needs to be updated
 	cashflowChanges := map[string]*models.CashflowSingle{}
 	for _, transaction := range transactions {
+		dateV, err := transaction.Date.Value()
+		if err != nil {
+			resp.FailedCount++
+			continue
+		}
+		dateString := dateV.(time.Time).UTC().GoString()
 		// check if the cashflow for that date already exists
-		existingCashflow, ok := cashflowChanges[transaction.Date]
+		existingCashflow, ok := cashflowChanges[dateString]
 		if !ok {
 			// if not create a new cashflow
 			existingCashflow = &models.CashflowSingle{
@@ -110,7 +106,7 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 			existingCashflow.TotalOutgoing += transaction.Amount
 			existingCashflow.TotalBalance -= transaction.Amount
 		}
-		cashflowChanges[transaction.Date] = existingCashflow
+		cashflowChanges[dateString] = existingCashflow
 		resp.SuccessCount++
 	}
 	repo := transaction_repo.TransactionRepository{}
@@ -135,13 +131,8 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 
 }
 func (t *TransactionService) UpdateSingleTransaction() {}
-func (t *TransactionService) GetSingleTransaction(id uint64) *models.TransactionSingle {
+func (t *TransactionService) GetSingleTransaction(id string) *models.TransactionSingle {
 	// search for transaction by id
-	for _, transaction := range transactionList {
-		if transaction.ID == id {
-			return &transaction
-		}
-	}
 	return nil
 }
 func (t *TransactionService) ListAllTransactions() ([]models.TransactionSingle, error) {

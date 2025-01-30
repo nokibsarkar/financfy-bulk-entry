@@ -3,9 +3,9 @@ package transaction
 import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	"financify/bulk-entry/services"
 	"log"
 
-	"github.com/godruoyi/go-snowflake"
 	"gorm.io/gorm"
 )
 
@@ -22,6 +22,7 @@ func (t *TransactionRepository) CreateTransaction(db *gorm.DB, transaction *mode
 		Reference: transaction.Reference,
 		Remarks:   transaction.Remarks,
 		Category:  transaction.Category,
+		ID:        services.GenerateSnowFlake(),
 	}
 	result := db.Create(newTransaction)
 	if result.Error != nil {
@@ -34,7 +35,7 @@ func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions
 	trs := []*database.Transaction{}
 	for _, transaction := range transactions {
 		newTransaction := &database.Transaction{
-			ID:        snowflake.ID(),
+			ID:        services.GenerateSnowFlake(),
 			VoucherNo: transaction.VoucherNo,
 			Date:      transaction.Date,
 			Amount:    transaction.Amount,
@@ -54,7 +55,7 @@ func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions
 	return nil, nil
 }
 
-func (t *TransactionRepository) GetSingleTransaction(id uint64) *models.TransactionSingle {
+func (t *TransactionRepository) GetSingleTransaction(id string) *models.TransactionSingle {
 	// search for transaction by id
 	return nil
 }

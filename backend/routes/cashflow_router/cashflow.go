@@ -10,7 +10,7 @@ import (
 func ListAllCashFlows(c *gin.Context) {
 	// This function is used to list all the CashFlows of that specific user
 	// return
-	service := cashflow_service.CashFlowService{CashbookID: 2147010522703200300}
+	service := cashflow_service.CashFlowService{CashbookID: "2147010522703200300"}
 	sampleCashFlow := service.ListCashFlowByCashbookID()
 	response := models.ResponseMultiple[models.CashflowSingle]{
 		Data:  sampleCashFlow,

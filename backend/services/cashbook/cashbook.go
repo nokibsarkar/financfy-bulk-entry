@@ -4,11 +4,10 @@ import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
 	cashbook_repository "financify/bulk-entry/repositories/cashbook"
-
-	"github.com/godruoyi/go-snowflake"
+	"financify/bulk-entry/services"
 )
 
-var tempCahbooks = make(map[uint64]*models.CashbookSingle, 0)
+var tempCahbooks = make(map[string]*models.CashbookSingle, 0)
 
 type CashBookService struct{}
 
@@ -38,7 +37,7 @@ func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*model
 	// Create a new cashbook
 
 	// every validation is done in the controller
-	newCashBookId := snowflake.ID()
+	newCashBookId := services.GenerateSnowFlake()
 	newCashbook := &models.CashbookSingle{
 		ID:            newCashBookId,
 		Name:          "New Cashbook",
@@ -56,7 +55,7 @@ func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*model
 	}
 	return newCashbook, nil
 }
-func (c *CashBookService) GetSingleCashBook(id uint64) *models.CashbookSingle {
+func (c *CashBookService) GetSingleCashBook(id string) *models.CashbookSingle {
 	// implementation
 	sampleCashbook, err := tempCahbooks[id]
 	if !err {

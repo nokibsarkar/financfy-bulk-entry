@@ -1,28 +1,30 @@
 package models
 
+import "gorm.io/datatypes"
+
 type TransactionSingle struct {
-	ID         uint64  `json:"id"`
-	VoucherNo  string  `json:"voucherNo"`
-	Date       string  `json:"date"`
-	Amount     float64 `json:"amount"`
-	Contact    string  `json:"contact"`
-	CashbookID uint64  `json:"cashbookId"`
-	Reference  string  `json:"reference"`
-	Remarks    string  `json:"remarks"`
-	Category   string  `json:"category"`
+	ID         string         `json:"id"`
+	VoucherNo  string         `json:"voucherNo"`
+	Date       datatypes.Date `json:"date"`
+	Amount     float64        `json:"amount"`
+	Contact    string         `json:"contact"`
+	CashbookID string         `json:"cashbookId"`
+	Reference  string         `json:"reference"`
+	Remarks    string         `json:"remarks"`
+	Category   string         `json:"category"`
 }
 
 type TransactionSingleInput struct {
-	ID         uint64  `json:"id"`
-	VoucherNo  string  `json:"voucherNo" binding:"required"`
-	Date       string  `json:"date" binding:"required"`
-	Amount     float64 `json:"amount" binding:"required"`
-	Contact    string  `json:"contact"`
-	CashbookID uint64  `json:"cashbookId" binding:"required"`
-	Reference  string  `json:"reference"`
-	Remarks    string  `json:"remarks"`
-	Category   string  `json:"category" binding:"required"`
-	Type       string  `json:"type" binding:"required"`
+	ID         string         `json:"id"`
+	VoucherNo  string         `json:"voucherNo" binding:"required"`
+	Date       datatypes.Date `json:"date" binding:"required"`
+	Amount     float64        `json:"amount" binding:"required"`
+	Contact    string         `json:"contact"`
+	CashbookID string         `json:"cashbookId" binding:"required"`
+	Reference  string         `json:"reference"`
+	Remarks    string         `json:"remarks"`
+	Category   string         `json:"category" binding:"required"`
+	Type       string         `json:"type" binding:"required"`
 }
 
 type BulkTransactionResponse struct {

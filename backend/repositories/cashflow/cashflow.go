@@ -3,8 +3,8 @@ package cashflow
 import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	"financify/bulk-entry/services"
 
-	"github.com/godruoyi/go-snowflake"
 	"gorm.io/gorm"
 )
 
@@ -16,7 +16,7 @@ func (c *CashFlowRepository) CreateOrUpdateCashFlow(db *gorm.DB, cashflow *model
 	result := db.Where(cashflow_in_db).First(cashflow_in_db)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
-			cashflow_in_db.ID = snowflake.ID()
+			cashflow_in_db.ID = services.GenerateSnowFlake()
 			cashflow_in_db.TotalIncoming = cashflow.TotalIncoming
 			cashflow_in_db.TotalOutgoing = cashflow.TotalOutgoing
 			cashflow_in_db.TotalBalance = cashflow.TotalBalance
