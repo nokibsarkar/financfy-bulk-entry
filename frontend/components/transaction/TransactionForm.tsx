@@ -2,7 +2,7 @@
 import { BaseURL } from "@/consts/server";
 import { ResponseMultiple } from "@/types/response";
 import { useState } from "react";
-
+type TransactionType = 'cashIn' | 'cashOut';
 type AddTransactionFormProps = {
 	type: string;
 	date: string;
@@ -15,7 +15,7 @@ type AddTransactionFormProps = {
 	receiveMode: string;
 	cashbookId: number;
 };
-const AddTransactionForm = ({ type, cashbookId = 1 }: { type: string, cashbookId: number }) => {
+const AddTransactionForm = ({ type, cashbookId = 1 }: { type: TransactionType, cashbookId: number }) => {
 	const [date, setDate] = useState('');
 	const [voucherNo, setVoucherNo] = useState('');
 	const [amount, setAmount] = useState('');
