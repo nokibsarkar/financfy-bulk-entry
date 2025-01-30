@@ -6,6 +6,7 @@ import (
 	cashflow_repo "financify/bulk-entry/repositories/cashflow"
 	transaction_repo "financify/bulk-entry/repositories/transaction"
 	"financify/bulk-entry/services"
+	"sort"
 	"time"
 
 	"fmt"
@@ -52,10 +53,11 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 	if err != nil {
 		return nil
 	}
-	_, err = cashflow_repo.CreateOrUpdateCashFlow(db, cashflowUpdate)
+	cashflow, err := cashflow_repo.CreateOrUpdateCashFlow(db, cashflowUpdate)
 	if err != nil {
 		return nil
 	}
+	cashflow.Propagate(db)
 	db.Commit()
 	newTransactionSingle := &models.TransactionSingle{
 		ID:         newTransactionId,
@@ -120,10 +122,22 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 		resp.FailedCount++
 		log.Fatalln(err)
 	}
+	sortedByDate := []*models.CashflowSingle{}
 	for _, cashflow := range cashflowChanges {
+		sortedByDate = append(sortedByDate, cashflow)
+
+	}
+	sort.Slice(sortedByDate, func(i, j int) bool {
+		date1, _ := sortedByDate[i].Date.Value()
+		date2, _ := sortedByDate[j].Date.Value()
+		return date1.(time.Time).Before(date2.(time.Time))
+	})
+	fmt.Println(sortedByDate)
+	for _, cashflow := range sortedByDate {
 		_, err := cashflow_repo.CreateOrUpdateCashFlow(db, cashflow)
 		if err != nil {
 			resp.FailedCount++
+			log.Fatalln(err)
 		}
 	}
 	db.Commit()

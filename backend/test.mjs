@@ -1,5 +1,5 @@
 const baseURL = "http://localhost:8080/api/v1";
-const cashbookID = '1rivnqt100000';
+const cashbookID = '1rj08gikk0000';
 async function NewCashbook() {
     const res = await fetch(baseURL + "/cashbook", {
         "method": "POST",
@@ -34,6 +34,15 @@ async function newTransactions() {
         "date": "2021-10-10T00:00:00.000Z",
         "category": "Income",
         "type" : "cashin",
+        "amount": 1,
+        "description": "Salary",
+        "cashbookId": cashbookID
+    }, 
+    {
+        "voucherNo": "123",
+        "date": "2021-10-12T00:00:00.000Z",
+        "category": "Income",
+        "type" : "cashout",
         "amount": 1000,
         "description": "Salary",
         "cashbookId": cashbookID
@@ -48,17 +57,17 @@ async function newTransactions() {
 }
 
 var k = true;
-const millis = 10000;
+const millis = 1000;
 setTimeout(() => {
     k = false;
 }, millis);
-for (var i = 0; i < 1000000; i++) {
+for (var i = 0; i < 1; i++) {
     if (!k) {
         break;
     }
     await newTransactions();
     // await NewCashbook();
-    await newTransaction();
+    // await newTransaction();
 }
 console.log(`Inserted ${i * 1} transactions in ${millis} milliseconds`);
 // 60 transactions per second
