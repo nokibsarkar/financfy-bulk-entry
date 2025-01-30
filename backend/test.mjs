@@ -32,11 +32,28 @@ async function newTransactions() {
         "voucherNo": "123",
         "date": "2021-10-10",
         "category": "Income",
-        "type" : "Cashout",
+        "type" : "cashin",
         "amount": 1000,
         "description": "Salary",
-        "cashbookId": 1
-    }];
+        "cashbookId": 2147010522703200300
+    }, {
+        "voucherNo": "123",
+        "date": "2021-10-10",
+        "category": "Income",
+        "type" : "cashin",
+        "amount": 1000,
+        "description": "Salary",
+        "cashbookId": 2147010522703200300
+    }, {
+        "voucherNo": "123",
+        "date": "2021-10-10",
+        "category": "Income",
+        "type" : "cashin",
+        "amount": 1000,
+        "description": "Salary",
+        "cashbookId": 2147010522703200300
+    }
+        ];
     const res = await fetch(baseURL + "/transaction/bulk", {
         "method": "POST",
         "body": JSON.stringify(data)
@@ -44,6 +61,20 @@ async function newTransactions() {
     const resturnedData = await res.json();
     console.log(resturnedData);
 }
-// await NewCashbook();
-// await newTransaction();
-await newTransactions();
+
+var k = true;
+const millis = 10000;
+setTimeout(() => {
+    k = false;
+}, millis);
+for (var i = 0; i < 1000000; i++) {
+    if (!k) {
+        break;
+    }
+    await newTransactions();
+    // await NewCashbook();
+    // await newTransaction();
+}
+console.log(`Inserted ${i * 1} transactions in ${millis} milliseconds`);
+// 60 transactions per second
+// 30 cashbooks per second

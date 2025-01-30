@@ -3,6 +3,7 @@ package transaction
 import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	"log"
 
 	"github.com/godruoyi/go-snowflake"
 	"gorm.io/gorm"
@@ -43,13 +44,13 @@ func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions
 			Remarks:   transaction.Remarks,
 			Category:  transaction.Category,
 		}
-
 		trs = append(trs, newTransaction)
 	}
 	result := db.Create(trs)
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	log.Println("Bulk transactions created", result.RowsAffected)
 	return nil, nil
 }
 

@@ -2,7 +2,7 @@ package cashflow_router
 
 import (
 	"financify/bulk-entry/models"
-	"fmt"
+	cashflow_service "financify/bulk-entry/services/cashbook/cashflow"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,15 +10,10 @@ import (
 func ListAllCashFlows(c *gin.Context) {
 	// This function is used to list all the CashFlows of that specific user
 	// return
-	sampleCashFlow := models.CashflowSingle{
-		ID:            1,
-		TotalIncoming: 1000.00,
-		TotalOutgoing: 500.00,
-		TotalBalance:  500.00,
-	}
-	fmt.Println(sampleCashFlow)
+	service := cashflow_service.CashFlowService{CashbookID: 2147006226616025000}
+	sampleCashFlow := service.ListCashFlowByCashbookID()
 	response := models.ResponseMultiple[models.CashflowSingle]{
-		Data:  []models.CashflowSingle{sampleCashFlow},
+		Data:  sampleCashFlow,
 		Error: "",
 	}
 	c.JSON(200, response)

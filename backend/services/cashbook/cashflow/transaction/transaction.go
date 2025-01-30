@@ -5,6 +5,7 @@ import (
 	"financify/bulk-entry/models"
 	cashflow_repo "financify/bulk-entry/repositories/cashflow"
 	transaction_repo "financify/bulk-entry/repositories/transaction"
+	"log"
 
 	"github.com/godruoyi/go-snowflake"
 )
@@ -109,7 +110,12 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 	repo := transaction_repo.TransactionRepository{}
 	cashflow_repo := cashflow_repo.CashFlowRepository{}
 	db := database.GetDatabaseConnection().Begin()
-	repo.CreateBulkTransactions(db, transactions)
+	_a, err := repo.CreateBulkTransactions(db, transactions)
+	_ = _a
+	if err != nil {
+		resp.FailedCount++
+		log.Fatalln(err)
+	}
 	for _, cashflow := range cashflowChanges {
 		_, err := cashflow_repo.CreateOrUpdateCashFlowByDate(db, cashflow)
 		if err != nil {
