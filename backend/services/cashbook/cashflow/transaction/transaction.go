@@ -1,7 +1,9 @@
 package transaction
 
 import (
+	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	cashflow_repo "financify/bulk-entry/repositories/cashflow"
 	transaction_repo "financify/bulk-entry/repositories/transaction"
 
 	"github.com/godruoyi/go-snowflake"
@@ -37,10 +39,31 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		Type:       transactionInput.Type,
 	}
 	repo := transaction_repo.TransactionRepository{}
-	_, err := repo.CreateTransaction(newTransaction)
+	cashflow_repo := cashflow_repo.CashFlowRepository{}
+	cashflowUpdate := &models.CashflowSingle{
+		CashbookID:    newTransaction.CashbookID,
+		TotalIncoming: 0.00,
+		TotalOutgoing: 0.00,
+		TotalBalance:  0.00,
+		Date:          newTransaction.Date,
+	}
+	if newTransaction.Type == "cashin" {
+		cashflowUpdate.TotalIncoming = newTransaction.Amount
+		cashflowUpdate.TotalBalance = newTransaction.Amount
+	} else {
+		cashflowUpdate.TotalOutgoing = newTransaction.Amount
+		cashflowUpdate.TotalBalance = -newTransaction.Amount
+	}
+	db := database.GetDatabaseConnection().Begin()
+	_, err := repo.CreateTransaction(db, newTransaction)
 	if err != nil {
 		return nil
 	}
+	_, err = cashflow_repo.CreateOrUpdateCashFlowByDate(db, cashflowUpdate)
+	if err != nil {
+		return nil
+	}
+	db.Commit()
 	newTransactionSingle := &models.TransactionSingle{
 		ID:         newTransactionId,
 		VoucherNo:  newTransaction.VoucherNo,
@@ -60,20 +83,40 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 		SuccessCount: 0,
 		FailedCount:  0,
 	}
+
+	cashflowChanges := map[string]*models.CashflowSingle{}
 	for _, transaction := range transactions {
-		transactionList = append(transactionList, models.TransactionSingle{
-			ID:         snowflake.ID(),
-			VoucherNo:  transaction.VoucherNo,
-			Date:       transaction.Date,
-			Amount:     transaction.Amount,
-			Contact:    transaction.Contact,
-			CashbookID: transaction.CashbookID,
-			Reference:  transaction.Reference,
-			Remarks:    transaction.Remarks,
-			Category:   transaction.Category,
-		})
+		existingCashflow, ok := cashflowChanges[transaction.Date]
+		if !ok {
+			existingCashflow = &models.CashflowSingle{
+				CashbookID:    transaction.CashbookID,
+				TotalIncoming: 0.00,
+				TotalOutgoing: 0.00,
+				TotalBalance:  0.00,
+				Date:          transaction.Date,
+			}
+		}
+		if transaction.Type == "cashin" {
+			existingCashflow.TotalIncoming += transaction.Amount
+			existingCashflow.TotalBalance += transaction.Amount
+		} else {
+			existingCashflow.TotalOutgoing += transaction.Amount
+			existingCashflow.TotalBalance -= transaction.Amount
+		}
+		cashflowChanges[transaction.Date] = existingCashflow
 		resp.SuccessCount++
 	}
+	repo := transaction_repo.TransactionRepository{}
+	cashflow_repo := cashflow_repo.CashFlowRepository{}
+	db := database.GetDatabaseConnection().Begin()
+	repo.CreateBulkTransactions(db, transactions)
+	for _, cashflow := range cashflowChanges {
+		_, err := cashflow_repo.CreateOrUpdateCashFlowByDate(db, cashflow)
+		if err != nil {
+			resp.FailedCount++
+		}
+	}
+	db.Commit()
 	return resp
 
 }
@@ -87,6 +130,9 @@ func (t *TransactionService) GetSingleTransaction(id uint64) *models.Transaction
 	}
 	return nil
 }
-func (t *TransactionService) ListAllTransactions() []models.TransactionSingle {
-	return transactionList
+func (t *TransactionService) ListAllTransactions() ([]models.TransactionSingle, error) {
+	db := database.GetDatabaseConnection()
+	repo := transaction_repo.TransactionRepository{}
+	transactions, err := repo.ListAllTransactions(db)
+	return transactions, err
 }

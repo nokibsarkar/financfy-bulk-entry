@@ -36,7 +36,7 @@ async function newTransactions() {
         "amount": 1000,
         "description": "Salary",
         "cashbookId": 1
-    }]
+    }];
     const res = await fetch(baseURL + "/transaction/bulk", {
         "method": "POST",
         "body": JSON.stringify(data)
@@ -44,6 +44,6 @@ async function newTransactions() {
     const resturnedData = await res.json();
     console.log(resturnedData);
 }
-await NewCashbook();
-await newTransaction();
+// await NewCashbook();
+// await newTransaction();
 await newTransactions();

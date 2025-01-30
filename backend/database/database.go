@@ -21,4 +21,5 @@ func init() {
 	db := GetDatabaseConnection()
 	db.AutoMigrate(&Cashbook{})
 	db.AutoMigrate(&Transaction{})
+	db.AutoMigrate(&CashFlow{})
 }

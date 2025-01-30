@@ -1,9 +1,11 @@
 package database
 
 type CashFlow struct {
-	ID        uint64  `json:"id"`
-	Amount    float64 `json:"amount"`
-	Direction string  `json:"direction"`
-	Note      string  `json:"note"`
-	Cashbook  uint64  `json:"cashbook"`
+	ID            uint64  `json:"id"`
+	Date          string  `json:"date"`
+	Amount        float64 `json:"amount"`
+	TotalIncoming float64 `json:"totalIncoming"`
+	TotalOutgoing float64 `json:"totalOutgoing"`
+	TotalBalance  float64 `json:"totalBalance"`
+	CashbookID    uint64  `json:"cashbookId"`
 }

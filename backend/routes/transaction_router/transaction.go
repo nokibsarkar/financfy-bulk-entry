@@ -3,7 +3,6 @@ package transaction_router
 import (
 	"financify/bulk-entry/models"
 	transaction_service "financify/bulk-entry/services/cashbook/cashflow/transaction"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +12,12 @@ func ListAllTransactions(c *gin.Context) {
 	// This function is used to list all the Transactions of that specific user
 	// return
 	service := transaction_service.TransactionService{}
-	transactions := service.ListAllTransactions()
+	transactions, err := service.ListAllTransactions()
+	if err != nil {
+		response := models.ResponseMultiple[models.TransactionSingle]{Data: nil, Error: err.Error()}
+		c.JSON(400, response)
+		return
+	}
 	response := models.ResponseMultiple[models.TransactionSingle]{
 		Data:  transactions,
 		Error: "",
@@ -42,7 +46,6 @@ func CreateBulkTransactions(c *gin.Context) {
 		c.JSON(400, resp)
 		return
 	}
-	fmt.Println(newTransactions)
 	service := transaction_service.TransactionService{}
 	resp := service.CreateBulkTransactions(newTransactions)
 	c.JSON(200, resp)
