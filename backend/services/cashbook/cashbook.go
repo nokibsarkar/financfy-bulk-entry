@@ -1,7 +1,9 @@
 package cashbook
 
 import (
+	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
+	cashbook_repository "financify/bulk-entry/repositories/cashbook"
 
 	"github.com/godruoyi/go-snowflake"
 )
@@ -20,9 +22,10 @@ func (c *CashBookService) ListCashbooks() []models.CashbookSingle {
 	return cashbooks
 }
 
-func (c *CashBookService) CreateCashbook(models.CreateCashBookInput) *models.CashbookSingle {
+func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*models.CashbookSingle, error) {
 	// Create a new cashbook
 
+	// every validation is done in the controller
 	newCashBookId := snowflake.ID()
 	newCashbook := &models.CashbookSingle{
 		ID:            newCashBookId,
@@ -32,8 +35,13 @@ func (c *CashBookService) CreateCashbook(models.CreateCashBookInput) *models.Cas
 		TotalOutgoing: 0.00,
 		TotalBalance:  0.00,
 	}
-	tempCahbooks[newCashBookId] = newCashbook
-	return newCashbook
+	repo := cashbook_repository.CashbookRepository{}
+	db := database.GetDatabaseConnection()
+	_, err := repo.CreateCashbook(db, &inp)
+	if err != nil {
+		return nil, err
+	}
+	return newCashbook, nil
 }
 func (c *CashBookService) GetSingleCashBook(id uint64) *models.CashbookSingle {
 	// implementation

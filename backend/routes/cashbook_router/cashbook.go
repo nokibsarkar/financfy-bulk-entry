@@ -29,7 +29,12 @@ func CreateCashBook(c *gin.Context) {
 		return
 	}
 	service := cashbook_service.CashBookService{}
-	newCashbook := service.CreateCashbook(newCashbookInp)
+	newCashbook, err := service.CreateCashbook(newCashbookInp)
+	if err != nil {
+		response := models.ResponseSingle[models.CashbookSingle]{Data: nil, Error: err.Error()}
+		c.JSON(400, response)
+		return
+	}
 	response := models.ResponseSingle[models.CashbookSingle]{Data: newCashbook, Error: ""}
 	c.JSON(200, response)
 }

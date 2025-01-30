@@ -5,8 +5,6 @@
 package database
 
 import (
-	"fmt"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -21,8 +19,7 @@ func GetDatabaseConnection() *gorm.DB {
 func init() {
 	//
 	db := GetDatabaseConnection()
-	fmt.Println("Database connection created", db)
-
+	// fmt.Println("Database connection created", db)
 	// Migrate the schema
-	//   db.AutoMigrate(&Product{})I
+	db.AutoMigrate(&Cashbook{})
 }
