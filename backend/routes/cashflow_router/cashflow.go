@@ -2,6 +2,7 @@ package cashflow_router
 
 import (
 	"financify/bulk-entry/models"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,7 @@ func ListAllCashFlows(c *gin.Context) {
 		TotalOutgoing: 500.00,
 		TotalBalance:  500.00,
 	}
+	fmt.Println(sampleCashFlow)
 	response := models.ResponseMultiple[models.CashflowSingle]{
 		Data:  []models.CashflowSingle{sampleCashFlow},
 		Error: "",

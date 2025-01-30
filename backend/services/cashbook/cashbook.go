@@ -15,11 +15,22 @@ type CashBookService struct{}
 func (c *CashBookService) ListCashbooks() []models.CashbookSingle {
 	// implementatio
 	// iterate over the cashbooks and return them
-	cashbooks := []models.CashbookSingle{}
-	for _, cashbook := range tempCahbooks {
-		cashbooks = append(cashbooks, *cashbook)
+	repo := cashbook_repository.CashbookRepository{}
+	db := database.GetDatabaseConnection()
+	cashbooks, _ := repo.LisCashBooks(db)
+	var cashs = make([]models.CashbookSingle, 0)
+	for _, cashbook := range cashbooks {
+		cash := models.CashbookSingle{
+			ID:            cashbook.ID,
+			Name:          cashbook.Name,
+			Description:   cashbook.Description,
+			TotalIncoming: cashbook.TotalIncoming,
+			TotalOutgoing: cashbook.TotalOutgoing,
+			TotalBalance:  cashbook.TotalBalance,
+		}
+		cashs = append(cashs, cash)
 	}
-	return cashbooks
+	return cashs
 }
 
 func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*models.CashbookSingle, error) {

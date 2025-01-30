@@ -23,3 +23,11 @@ func (c *CashbookRepository) CreateCashbook(db *gorm.DB, cashbook *models.Create
 	}
 	return nil, nil
 }
+func (c *CashbookRepository) LisCashBooks(db *gorm.DB) ([]database.Cashbook, error) {
+	var cashbooks []database.Cashbook
+	result := db.Find(&cashbooks)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return cashbooks, nil
+}

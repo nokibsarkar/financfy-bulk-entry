@@ -16,17 +16,17 @@ const SingleCashFlowRow = (p : SingleCashFlowProperty ) => (
         </td>
     </tr>
 )
-export default async function User() {
+export default async function CashFlow() {
     // const res = await fetch('url', {
     //     method : 'GET',
 
     // }).then(a => a.json());
-    const res : ResponseMultiple<SingleCashFlowProperty> = await fetch(BaseURL + '/api/v1/cashbook', {
+    const response = await fetch(BaseURL + '/api/v1/cashbook', {
         method : 'GET',
          
-    }).then(a => a.json());
-
-
+    })
+    
+    const res : ResponseMultiple<SingleCashFlowProperty>  = await response.json();
     const cashFlow = res.data;
 
   return (
