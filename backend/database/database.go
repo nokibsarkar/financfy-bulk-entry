@@ -3,3 +3,26 @@
 // The database schema would be created using the database connection.
 // The database schema would be used to create the tables in the database.
 package database
+
+import (
+	"fmt"
+
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
+
+func GetDatabaseConnection() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	return db
+}
+func init() {
+	//
+	db := GetDatabaseConnection()
+	fmt.Println("Database connection created", db)
+
+	// Migrate the schema
+	//   db.AutoMigrate(&Product{})I
+}

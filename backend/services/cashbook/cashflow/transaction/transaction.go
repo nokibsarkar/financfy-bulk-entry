@@ -62,7 +62,13 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 }
 func (t *TransactionService) UpdateSingleTransaction() {}
 func (t *TransactionService) GetSingleTransaction(id uint64) *models.TransactionSingle {
-	return &transactionList[0]
+	// search for transaction by id
+	for _, transaction := range transactionList {
+		if transaction.ID == id {
+			return &transaction
+		}
+	}
+	return nil
 }
 func (t *TransactionService) ListAllTransactions() []models.TransactionSingle {
 	return transactionList

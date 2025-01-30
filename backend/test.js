@@ -1,4 +1,4 @@
-const baseURL = "https://f78f-103-230-40-62.ngrok-free.app/api/v1";
+const baseURL = "http://localhost:8080/api/v1";
 async function NewCashbook() {
     const res = await fetch(baseURL + "/cashbook", {
         "method": "POST",
