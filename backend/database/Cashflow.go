@@ -3,7 +3,6 @@ package database
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
@@ -26,13 +25,9 @@ func (c *CashFlow) TableName() string {
 	return "cashflow"
 }
 func (c *CashFlow) Propagate(db *gorm.DB) {
-	dateValue, err := c.Date.Value()
-	if err != nil {
-		return
-	}
-	yesterday := datatypes.Date(dateValue.(time.Time).AddDate(0, 0, -1))
-	YCB := &CashFlow{Date: yesterday, CashbookID: c.CashbookID}
-	res := db.Where(YCB).Last(YCB)
+
+	YCB := &CashFlow{CashbookID: c.CashbookID}
+	res := db.Where(YCB).Where("date < ?", c.Date).Order("date desc").First(YCB)
 	fmt.Printf("Yesterday's Cashflow: %v\n", *YCB)
 	if res.Error != nil {
 		c.OpeningBalance = 0
@@ -43,8 +38,8 @@ func (c *CashFlow) Propagate(db *gorm.DB) {
 	fmt.Println("Total Incoming: ", c.TotalIncoming)
 	fmt.Println("Total Outgoing: ", c.TotalOutgoing)
 	fmt.Println("Total Balance: ", c.TotalBalance)
-	c.TotalBalance = c.OpeningBalance + c.TotalIncoming - c.TotalOutgoing
-	c.ClosingBalance = c.TotalBalance
+	c.TotalBalance = c.TotalIncoming - c.TotalOutgoing
+	c.ClosingBalance = c.OpeningBalance + c.TotalBalance
 	db.Save(c)
 
 	allSubsequentCashflows := []CashFlow{}
@@ -56,8 +51,8 @@ func (c *CashFlow) Propagate(db *gorm.DB) {
 	var lastClosingBalance float64 = c.ClosingBalance
 	for _, cashflow := range allSubsequentCashflows {
 		cashflow.OpeningBalance = lastClosingBalance
-		cashflow.TotalBalance = cashflow.OpeningBalance + cashflow.TotalIncoming - cashflow.TotalOutgoing
-		cashflow.ClosingBalance = cashflow.TotalBalance
+		cashflow.TotalBalance = cashflow.TotalIncoming - cashflow.TotalOutgoing
+		cashflow.ClosingBalance = cashflow.OpeningBalance + cashflow.TotalBalance
 		db.Save(cashflow)
 		lastClosingBalance = cashflow.ClosingBalance
 	}

@@ -15,16 +15,19 @@ func (c *CashFlowService) ListCashFlowByCashbookID() []models.CashflowSingle {
 	db, close := database.GetDatabaseConnection()
 	defer close()
 	var cashflows []database.CashFlow
-	res := db.Where(database.CashFlow{CashbookID: c.CashbookID}).Find(&cashflows)
+	res := db.Where(database.CashFlow{CashbookID: c.CashbookID}).Find(&cashflows).Order("id desc")
 	fmt.Println(res)
 	cs := []models.CashflowSingle{}
 	for _, cashflow := range cashflows {
 		cs = append(cs, models.CashflowSingle{
-			CashbookID:    cashflow.CashbookID,
-			TotalIncoming: cashflow.TotalIncoming,
-			TotalOutgoing: cashflow.TotalOutgoing,
-			TotalBalance:  cashflow.TotalBalance,
-			Date:          cashflow.Date,
+			ID:             cashflow.ID,
+			CashbookID:     cashflow.CashbookID,
+			OpeningBalance: cashflow.OpeningBalance,
+			TotalIncoming:  cashflow.TotalIncoming,
+			TotalOutgoing:  cashflow.TotalOutgoing,
+			TotalBalance:   cashflow.TotalBalance,
+			ClosingBalance: cashflow.ClosingBalance,
+			Date:           cashflow.Date,
 		})
 	}
 	return cs

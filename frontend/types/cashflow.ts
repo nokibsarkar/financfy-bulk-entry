@@ -1,5 +1,5 @@
 export type SingleCashFlowProperty = {
-    id : number
+    id : string
     date : string
     openingBalance : number
     totalIn : number

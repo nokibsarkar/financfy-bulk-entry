@@ -13,9 +13,9 @@ type AddTransactionFormProps = {
 	remarks: string;
 	category: string;
 	receiveMode: string;
-	cashbookId: number;
+	cashbookId: string;
 };
-const AddTransactionForm = ({ type, cashbookId = 1 }: { type: TransactionType, cashbookId: number }) => {
+const AddTransactionForm = ({ type, cashbookId = '' }: { type: TransactionType, cashbookId: string }) => {
 	const [date, setDate] = useState('');
 	const [voucherNo, setVoucherNo] = useState('');
 	const [amount, setAmount] = useState('');
@@ -28,7 +28,7 @@ const AddTransactionForm = ({ type, cashbookId = 1 }: { type: TransactionType, c
 	const saveHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const data: AddTransactionFormProps = {
 			"voucherNo": voucherNo,
-			"date": date,
+			"date": new Date(date).toISOString(),
 			"category": category,
 			"type": type,
 			"amount": Number(amount),
