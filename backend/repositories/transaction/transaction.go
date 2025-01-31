@@ -11,6 +11,7 @@ import (
 
 type TransactionRepository struct{}
 
+// Create a new transaction
 func (t *TransactionRepository) CreateTransaction(db *gorm.DB, transaction *models.TransactionSingleInput) (*models.TransactionSingle, error) {
 	// Create a new transaction
 	newTransaction := &database.Transaction{
@@ -30,6 +31,8 @@ func (t *TransactionRepository) CreateTransaction(db *gorm.DB, transaction *mode
 	}
 	return nil, nil
 }
+
+// Create bulk transaction at once
 func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions []models.TransactionSingleInput) (*models.TransactionSingle, error) {
 	// Create multiple transactions at once
 	trs := []*database.Transaction{}

@@ -27,6 +27,7 @@ func (c *CashFlow) TableName() string {
 func (c *CashFlow) Propagate(db *gorm.DB) {
 
 	YCB := &CashFlow{CashbookID: c.CashbookID}
+	// Fetch the immediate previous cashflow
 	res := db.Where(YCB).Where("date < ?", c.Date).Order("date desc").First(YCB)
 	fmt.Printf("Yesterday's Cashflow: %v\n", *YCB)
 	if res.Error != nil {
@@ -43,11 +44,13 @@ func (c *CashFlow) Propagate(db *gorm.DB) {
 	db.Save(c)
 
 	allSubsequentCashflows := []CashFlow{}
+	// Get all subsequent cashflows
 	res = db.Where(CashFlow{CashbookID: c.CashbookID}).Where("date > ?", c.Date).Order("date asc").Find(&allSubsequentCashflows)
 	if res.Error != nil {
 		log.Println(res.Error)
 		return
 	}
+	// Now propagate the changes to all subsequent cashflows
 	var lastClosingBalance float64 = c.ClosingBalance
 	for _, cashflow := range allSubsequentCashflows {
 		cashflow.OpeningBalance = lastClosingBalance
@@ -56,4 +59,12 @@ func (c *CashFlow) Propagate(db *gorm.DB) {
 		db.Save(cashflow)
 		lastClosingBalance = cashflow.ClosingBalance
 	}
+	// Update the cashbook
+	cbook := &Cashbook{ID: c.CashbookID}
+	db.First(cbook)
+	cbook.TotalIncoming += c.TotalIncoming
+	cbook.TotalOutgoing += c.TotalOutgoing
+	cbook.TotalBalance += c.TotalBalance
+	db.Save(cbook)
+	fmt.Println((cbook))
 }
