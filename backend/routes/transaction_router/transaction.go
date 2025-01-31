@@ -3,6 +3,7 @@ package transaction_router
 import (
 	"financify/bulk-entry/models"
 	transaction_service "financify/bulk-entry/services/cashbook/cashflow/transaction"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +12,19 @@ func ListAllTransactions(c *gin.Context) {
 	// This function is used to list all the Transactions of that specific user
 	// return
 	service := transaction_service.TransactionService{}
-	transactions, err := service.ListAllTransactions()
+	filter := &models.TransactionFilter{}
+	filter.CashflowID = c.Query("cashflow_id")
+	startDate, ok := c.GetQuery("start_date")
+	if ok {
+		startDate, err := time.Parse("2006-01-02", startDate)
+		if err != nil {
+			response := models.ResponseMultiple[models.TransactionSingle]{Data: nil, Error: err.Error()}
+			c.JSON(400, response)
+			return
+		}
+		filter.StartDate = &startDate
+	}
+	transactions, err := service.ListAllTransactions(filter)
 	if err != nil {
 		response := models.ResponseMultiple[models.TransactionSingle]{Data: nil, Error: err.Error()}
 		c.JSON(400, response)

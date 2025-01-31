@@ -4,6 +4,7 @@ import (
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
 	"financify/bulk-entry/services"
+	"fmt"
 	"log"
 
 	"gorm.io/gorm"
@@ -62,10 +63,27 @@ func (t *TransactionRepository) GetSingleTransaction(id string) *models.Transact
 	// search for transaction by id
 	return nil
 }
-func (t *TransactionRepository) ListAllTransactions(db *gorm.DB) ([]models.TransactionSingle, error) {
+func (t *TransactionRepository) ListAllTransactions(db *gorm.DB, filter *models.TransactionFilter) ([]models.TransactionSingle, error) {
 	// List all transactions
 	transactions := []database.Transaction{}
-	result := db.Find(&transactions)
+	stmt := db
+	if filter.CashflowID != "" {
+		cashflow := &database.CashFlow{
+			ID: filter.CashflowID,
+		}
+		db.Where(cashflow).First(cashflow)
+		if cashflow.ID == "" {
+			return nil, fmt.Errorf("Cashflow not found")
+		}
+		stmt = db.Where(database.Transaction{Cashbook: cashflow.CashbookID, Date: cashflow.Date})
+	}
+	if filter.StartDate != nil {
+		stmt = stmt.Where("date >= ?", filter.StartDate)
+	}
+	if filter.EndDate != nil {
+		stmt = stmt.Where("date < ?", filter.EndDate)
+	}
+	result := stmt.Find(&transactions)
 	if result.Error != nil {
 		return nil, result.Error
 	}

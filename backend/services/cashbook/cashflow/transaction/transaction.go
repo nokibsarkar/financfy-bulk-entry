@@ -149,10 +149,10 @@ func (t *TransactionService) GetSingleTransaction(id string) *models.Transaction
 	// search for transaction by id
 	return nil
 }
-func (t *TransactionService) ListAllTransactions() ([]models.TransactionSingle, error) {
+func (t *TransactionService) ListAllTransactions(filter *models.TransactionFilter) ([]models.TransactionSingle, error) {
 	db, close := database.GetDatabaseConnection()
 	defer close()
 	repo := transaction_repo.TransactionRepository{}
-	transactions, err := repo.ListAllTransactions(db)
+	transactions, err := repo.ListAllTransactions(db, filter)
 	return transactions, err
 }

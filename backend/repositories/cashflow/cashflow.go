@@ -20,6 +20,8 @@ func (c *CashFlowRepository) CreateOrUpdateCashFlow(db *gorm.DB, cashflow *model
 			cashflow_in_db.TotalIncoming = cashflow.TotalIncoming
 			cashflow_in_db.TotalOutgoing = cashflow.TotalOutgoing
 			cashflow_in_db.TotalBalance = cashflow.TotalBalance
+			cashflow_in_db.CashbookID = cashflow.CashbookID
+			cashflow_in_db.Date = cashflow.Date
 			result := db.Create(cashflow_in_db)
 			if result.Error != nil {
 				return nil, result.Error
