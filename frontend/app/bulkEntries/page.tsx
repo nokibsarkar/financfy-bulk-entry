@@ -3,60 +3,38 @@ import Server from '@/consts/server';
 import { SingleTransactionProperty } from '@/types/transaction';
 import React, { useEffect } from 'react'
 
-const BulkEntryRow = ({ ref, removeRowByID, id }: any) => {
-
-    const [type, setType] = React.useState('Cash In');
-    const [contact, setContact] = React.useState('Mst Rukaiya Islam Tonni');
-    const [category, setCategory] = React.useState('Salary');
-    const [receiveMode, setReceiveMode] = React.useState('Cash');
-    const [remarks, setRemarks] = React.useState('');
-    const [amount, setAmount] = React.useState('');
-    useEffect(() => {
-        if (!ref)
-            return;
-        if (ref.current)
-            return;
-        ref.current = {
-            getValues: () => ({
-                amount,
-                contact,
-                remarks,
-                category,
-                type,
-                mode : receiveMode,
-            }),
-        }
-    }, []);
+const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) => {
+    
     return (
         <tr className="border-b text-xs" id={id}>
             <td className="p-2">1</td>
             <td className="p-2">
-                <input type="number" 
-                className="w-full p-1 border rounded" 
-                value={amount}
-                onChange={e => setAmount(e.target.value)} 
+                <input type="number"
+                    className="w-full p-1 border rounded"
+                    value={transaction.amount}
+                    onChange={e => dispatchChange('amount', e.target.value)}
                 />
             </td>
-            <td className="p-2"><select className="w-full p-1 border rounded" value={type} onChange={e => setType(e.target.value)}>
+            <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.type} onChange={e => dispatchChange('type', e.target.value)}>
                 <option>Select...</option>
                 <option>Cash In</option>
                 <option>Cash Out</option>
             </select></td>
-            <td className="p-2"><select className="w-full p-1 border rounded" value={contact} onChange={e => setContact(e.target.value)}>
+            <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.contact} onChange={e => dispatchChange('contact', e.target.value)}>
                 <option>Select...</option>
                 <option>Mst Rukaiya Islam Tonni</option>
             </select></td>
-            <td className="p-2"><select className="w-full p-1 border rounded" value={category} onChange={e => setCategory(e.target.value)}>
+            <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.category} onChange={e => dispatchChange('category', e.target.value)}>
                 <option>Select...</option>
                 <option>Salary</option>
             </select></td>
-            <td className="p-2"><select className="w-full p-1 border rounded" value={receiveMode} onChange={e => setReceiveMode(e.target.value)}>
+            <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.mode} onChange={e => dispatchChange('mode', e.target.value)}>
                 <option disabled>Select...</option>
                 <option>Cash</option>
                 <option>Online method</option>
                 <option>Bank</option>
             </select></td>
-            <td className="p-2"><input type="text" className="w-full p-1 border rounded" placeholder="Enter remarks" value={remarks} onChange={e => setRemarks(e.target.value)} /></td>
+            <td className="p-2"><input type="text" className="w-full p-1 border rounded" placeholder="Enter remarks" value={transaction.remarks} onChange={e => dispatchChange('remarks', e.target.value)} /></td>
             <td className="p-2 text-center">
                 <button className="text-red-500" onClick={removeRowByID}>Remove</button>
             </td>
@@ -66,8 +44,8 @@ const BulkEntryRow = ({ ref, removeRowByID, id }: any) => {
 export default function User() {
     const [rows, setRows] = React.useState<React.ReactNode[]>([]);
     const [refs, setRefs] = React.useState<{ [k: string]: { current: any } }>({});
-    const cashbookID = '1';
-    const [tableRows, setTableRows] = React.useState<SingleTransactionProperty[]>([]);
+    const cashbookID = '1rj4m1je40000';
+    const [tableRowMap, setTableRowMap] = React.useState<{ [k: string]: SingleTransactionProperty }>({});
     const [date, setDate] = React.useState('');
     const [voucherNo, setVoucherNo] = React.useState('');
     const removeRowByID = (id: string) => () => {
@@ -76,28 +54,49 @@ export default function User() {
             delete refs[id];
         setRows(rows.filter((r: any) => r.id !== id));
     }
+    const dispatchChange = (id: string) => (key: string, value: string) => {
+        setTableRowMap({ ...tableRowMap, [id]: { ...tableRowMap[id], [key]: value } });
+    }
     const addRow = () => {
         const uniqueID = Math.random().toString(36).substring(7);
         const ref = React.createRef();
         setRefs({ ...refs, [uniqueID]: ref });
+        setTableRowMap({
+            ...tableRowMap, [uniqueID]: {
+                id: uniqueID,
+                amount: '',
+                contact: '',
+                remarks: '',
+                category: '',
+                type: '',
+                mode: '',
+            }
+        });
         setRows([...rows, <BulkEntryRow ref={ref} removeRowByID={removeRowByID(uniqueID)} id={uniqueID} key={uniqueID} />]);
     }
     const saveBulkTransaction = () => {
-        const data : SingleTransactionProperty[] = refs ? Object.values(refs).map(r => {
-            const { amount, contact, remarks, category, type, mode } = r.current.getValues();
+        const data : SingleTransactionProperty[] = Object.values(tableRowMap).length ? Object.values(tableRowMap).map(r => {
+            const { amount, contact, remarks, category, type, mode } = r;
             return {
                 id : Math.random().toString(36).substring(7),
-                amount,
+                amount : parseFloat(amount),
                 contact,
                 remarks,
                 category,
                 type,
                 mode,
-                date : new Date(date || 'now').toISOString(),
+                date : new Date(date || '').toISOString(),
                 voucherNo : voucherNo,
+                cashbookId : cashbookID
             }
         }) : [];
-        Server.addBulkTransactions(data);
+        Server.addBulkTransactions(data).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        }).finally(() => {
+            console.log('finally');
+        })
     }
     useEffect(() => {
         addRow();
@@ -132,7 +131,15 @@ export default function User() {
                         </tr>
                     </thead>
                     <tbody>
-                        {rows}
+                        {/* {rows} */}
+                        {Object.values(tableRowMap)
+                            .map((r, i) => <BulkEntryRow
+                                ref={refs[r.id]}
+                                removeRowByID={removeRowByID(r.id)}
+                                id={r.id} key={r.id}
+                                dispatchChange={dispatchChange(r.id)}
+                                transaction={r}
+                            />)}
                     </tbody>
                 </table>
 
