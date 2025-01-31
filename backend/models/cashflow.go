@@ -12,3 +12,6 @@ type CashflowSingle struct {
 	ClosingBalance float64        `json:"closingBalance"`
 	CashbookID     string         `json:"cashbookId"`
 }
+type CashflowFilter struct {
+	CashbookID string `json:"cashbookId"`
+}

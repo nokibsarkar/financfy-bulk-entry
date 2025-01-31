@@ -10,3 +10,12 @@ export type SingleTransactionProperty = {
     remarks: string
     action : string
 }
+export type SingleTransactionInput = {
+    id: string;
+    amount: number | string;
+    contact: string;
+    remarks: string;
+    category: string;
+    type: string;
+    mode: string;
+}

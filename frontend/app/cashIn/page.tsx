@@ -9,7 +9,7 @@ export default function User() {
                
                   <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
                     <h2 className="text-lg text-primary mb-4">Add Cash in Entry</h2>
-                    <AddTransactionForm type='cashIn' cashbookId={"1rj08gikk0000"} />
+                    <AddTransactionForm type='cashIn' cashbookId={"1rj08gikk0000"} modeLabel='Receive mode' />
                   </div>
 
 

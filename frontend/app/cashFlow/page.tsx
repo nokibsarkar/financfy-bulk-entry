@@ -1,4 +1,4 @@
-import { BaseURL } from "@/consts/server";
+import Server, { BaseURL } from "@/consts/server";
 import { SingleCashFlowProperty } from "@/types/cashflow";
 import { ResponseMultiple } from "@/types/response";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import React from "react";
 const SingleCashFlowRow = (p: SingleCashFlowProperty) => (
 	<tr className='text-black text-center' >
 		<td className='text-black p-3'>
-			<Link href={`cashFlow/${p.id}`} className="text-primary">{p.date}</Link>
+			<Link href={`cashFlow/${p.id}`} className="text-primary">{p.date.split('T')[0]}</Link>
 		</td>
 		<td className=' '>{p.openingBalance}</td>
 		<td className=' '>{p.totalIn}</td>
@@ -20,18 +20,13 @@ const SingleCashFlowRow = (p: SingleCashFlowProperty) => (
 	</tr>
 )
 export default async function CashFlow() {
-	const response = await fetch(BaseURL + '/api/v1/cashflow/', {
-		method: 'GET',
-	})
-
-	const res: ResponseMultiple<SingleCashFlowProperty> = await response.json();
+	const res: ResponseMultiple<SingleCashFlowProperty> = await Server.getCashflows();
 	const cashFlow = res.data;
 	return (
 		<div className="p-6 h-screen bg-white ml-48">
 			<h2 className="text-lg  text-primary mb-4">
 				Mst Rukaiya Islam Tonni's cash book : Daily cash flow
 			</h2>
-
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse border border-gray-300 text-xs ">
 					<thead className="bg-primary  ">

@@ -15,8 +15,8 @@ type AddTransactionFormProps = {
 	receiveMode: string;
 	cashbookId: string;
 };
-const AddTransactionForm = ({ type, cashbookId = '' }: { type: TransactionType, cashbookId: string }) => {
-	const [date, setDate] = useState('');
+const AddTransactionForm = ({ type, cashbookId = '' , modeLabel = 'Mode'}: { type: TransactionType, cashbookId: string, modeLabel : string }) => {
+	const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 	const [voucherNo, setVoucherNo] = useState('');
 	const [amount, setAmount] = useState('');
 	const [contact, setContact] = useState('');
@@ -114,13 +114,13 @@ const AddTransactionForm = ({ type, cashbookId = '' }: { type: TransactionType, 
 
 				<div>
 					<label className="block text-sm font-medium  text-black">
-						Receive mode *
+						{modeLabel} *
 					</label>
 					<select className="w-full mt-1 p-2 border border-gray-300 rounded-md text-gray-700 text-xs"
 						value={receiveMode}
 						onChange={e => setReceiveMode(e.target.value)}
 					>
-						<option>Receive mode</option>
+						<option disabled>Receive mode</option>
 						<option>Cash</option>
 						<option>Bank</option>
 						<option>Online method</option>

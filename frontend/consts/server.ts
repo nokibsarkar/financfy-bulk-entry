@@ -1,7 +1,7 @@
 import { SingleCashbookRowProperty } from "@/types/cashbook";
 import { SingleCashFlowProperty } from "@/types/cashflow";
 import { ResponseMultiple } from "@/types/response";
-import { SingleTransactionProperty } from "@/types/transaction";
+import { SingleTransactionInput, SingleTransactionProperty } from "@/types/transaction";
 
 export const BaseURL = 'https://6fdd-118-179-192-216.ngrok-free.app';
 
@@ -35,7 +35,7 @@ class Server {
         })
         return res.json();
     }
-    static async addBulkTransactions(data: SingleTransactionProperty[]) {
+    static async addBulkTransactions(data: SingleTransactionInput[]) {
         const res = await fetch(BaseURL + "/api/v1/transaction/bulk", {
             "method": "POST",
             "body": JSON.stringify(data)

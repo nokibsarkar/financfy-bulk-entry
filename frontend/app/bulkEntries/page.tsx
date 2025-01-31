@@ -1,10 +1,10 @@
 'use client'
 import Server from '@/consts/server';
-import { SingleTransactionProperty } from '@/types/transaction';
+import { SingleTransactionInput } from '@/types/transaction';
 import React, { useEffect } from 'react'
 
 const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) => {
-    
+
     return (
         <tr className="border-b text-xs" id={id}>
             <td className="p-2">1</td>
@@ -41,18 +41,19 @@ const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) =
         </tr>
     )
 }
-export default function User() {
-    const [rows, setRows] = React.useState<React.ReactNode[]>([]);
+export default function BulkEntry() {
     const [refs, setRefs] = React.useState<{ [k: string]: { current: any } }>({});
     const cashbookID = '1rj4m1je40000';
-    const [tableRowMap, setTableRowMap] = React.useState<{ [k: string]: SingleTransactionProperty }>({});
+    const [tableRowMap, setTableRowMap] = React.useState<{ [k: string]: SingleTransactionInput }>({});
     const [date, setDate] = React.useState('');
     const [voucherNo, setVoucherNo] = React.useState('');
     const removeRowByID = (id: string) => () => {
-        const ref = refs[id];
-        if (ref && ref.current)
-            delete refs[id];
-        setRows(rows.filter((r: any) => r.id !== id));
+        setTableRowMap(Object.keys(tableRowMap).reduce((acc, k) => {
+            if (k !== id) {
+                acc[k] = tableRowMap[k];
+            }
+            return acc;
+        }, {} as { [k: string]: SingleTransactionInput }));
     }
     const dispatchChange = (id: string) => (key: string, value: string) => {
         setTableRowMap({ ...tableRowMap, [id]: { ...tableRowMap[id], [key]: value } });
@@ -72,35 +73,48 @@ export default function User() {
                 mode: '',
             }
         });
-        setRows([...rows, <BulkEntryRow ref={ref} removeRowByID={removeRowByID(uniqueID)} id={uniqueID} key={uniqueID} />]);
+        
     }
     const saveBulkTransaction = () => {
-        const data : SingleTransactionProperty[] = Object.values(tableRowMap).length ? Object.values(tableRowMap).map(r => {
-            const { amount, contact, remarks, category, type, mode } = r;
-            return {
-                id : Math.random().toString(36).substring(7),
-                amount : parseFloat(amount),
-                contact,
-                remarks,
-                category,
-                type,
-                mode,
-                date : new Date(date || '').toISOString(),
-                voucherNo : voucherNo,
-                cashbookId : cashbookID
-            }
-        }) : [];
-        Server.addBulkTransactions(data).then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        }).finally(() => {
-            console.log('finally');
-        })
+        try {
+            const dateParsed = new Date(date || '').toISOString();
+            const data: SingleTransactionInput[] = Object.values(tableRowMap).length ? Object.values(tableRowMap).map(r => {
+                const { amount, contact, remarks, category, type, mode } = r;
+                return {
+                    id: Math.random().toString(36).substring(7),
+                    amount: parseFloat(amount as string),
+                    contact,
+                    remarks,
+                    category,
+                    type,
+                    mode,
+                    date: dateParsed,
+                    voucherNo: voucherNo,
+                    cashbookId: cashbookID
+                }
+            }) : [];
+            Server.addBulkTransactions(data).then(res => {
+                console.log(res);
+                alert('Transaction saved successfully');
+            }).catch(err => {
+                console.log(err);
+            }).finally(() => {
+                console.log('finally');
+            })
+        } catch (e) {
+            console.log('error parsing date', e);
+        }
     }
     useEffect(() => {
-        addRow();
+        reset();
     }, []);
+    const reset = () => {
+        setDate(new Date().toISOString().split('T')[0]);
+        setVoucherNo('');
+        setTableRowMap({});
+        setRefs({});
+        addRow();
+    }
     return (
         <main className='text-black bg-white ml-48' >
             <div className=" w-full h-screen bg-white p-6 ">
@@ -144,10 +158,9 @@ export default function User() {
                 </table>
 
                 <div className="mt-4 flex justify-end gap-4 text-xs">
-                    <button className="px-4 py-2 bg-red-500 text-white rounded">Reset</button>
+                    <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={reset}>Reset</button>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={saveBulkTransaction}>Save</button>
                     <button className="px-4 py-2 bg-green-500 text-white rounded" onClick={addRow}>Add Row</button>
-
                 </div>
             </div>
 
