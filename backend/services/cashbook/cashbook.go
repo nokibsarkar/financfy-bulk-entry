@@ -40,8 +40,9 @@ func (c *CashBookService) CreateCashbook(inp models.CreateCashBookInput) (*model
 	newCashBookId := services.GenerateSnowFlake()
 	newCashbook := &models.CashbookSingle{
 		ID:            newCashBookId,
-		Name:          "New Cashbook",
-		Description:   "This is a new cashbook",
+		Name:          inp.Name,
+		Description:   inp.Name,
+		Currency:      "BDT",
 		TotalIncoming: 0.00,
 		TotalOutgoing: 0.00,
 		TotalBalance:  0.00,

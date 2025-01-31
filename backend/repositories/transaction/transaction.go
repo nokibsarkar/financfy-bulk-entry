@@ -71,7 +71,6 @@ func (t *TransactionRepository) ListAllTransactions(db *gorm.DB, filter *models.
 	transactions := []database.Transaction{}
 	stmt := db
 	if filter.CashflowID != "" {
-		fmt.Println("Filtering by cashflow")
 		cashflow := &database.CashFlow{
 			ID: filter.CashflowID,
 		}
