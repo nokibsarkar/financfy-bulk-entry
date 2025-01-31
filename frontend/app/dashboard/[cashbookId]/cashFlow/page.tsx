@@ -28,7 +28,7 @@ export default async function CashFlow({params} : {params : {cashbookId : string
 			<h2 className="text-lg  text-primary mb-4">
 				Mst Rukaiya Islam Tonni's cash book : Daily cash flow
 			</h2>
-			<div className="overflow-x-auto">
+			<div className="">
 				<table className="w-full border-collapse border border-gray-300 text-xs ">
 					<thead className="bg-primary  ">
 						<tr className="text-left text-white">

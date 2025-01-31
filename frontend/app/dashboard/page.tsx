@@ -1,12 +1,15 @@
 import { BaseURL } from '@/consts/server';
 import { SingleCashbookRowProperty } from '@/types/cashbook';
 import { ResponseMultiple } from '@/types/response'
+import Link from 'next/link';
 import React from 'react' 
 
 
 const SingleCashbookRow = (p : SingleCashbookRowProperty ) => (
     <tr className='' id={p.id}>
-        <td className='py-2'>{p.name}</td>
+        <td className='py-2'>
+            <Link href={`/dashboard/${p.id}/cashFlow`} className="text-primary">{p.name}</Link>
+            </td>
         <td className=' '>{p.openingBalance}</td>
         <td className=' '>{p.totalIn}</td>
         <td className=''>{p.totalOut}</td>
