@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"financify/bulk-entry/consts"
 	"financify/bulk-entry/database"
 	"financify/bulk-entry/models"
 	cashflow_repo "financify/bulk-entry/repositories/cashflow"
@@ -39,7 +40,7 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		TotalBalance:  0.00,
 		Date:          newTransaction.Date,
 	}
-	if newTransaction.Type == "cashin" {
+	if newTransaction.Type == consts.CashIn {
 		cashflowUpdate.TotalIncoming = newTransaction.Amount
 		cashflowUpdate.TotalBalance = newTransaction.Amount
 	} else {
@@ -99,7 +100,7 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 				Date:          transaction.Date,
 			}
 		}
-		if transaction.Type == "cashin" {
+		if transaction.Type == consts.CashIn {
 			// update the cashflow
 			existingCashflow.TotalIncoming += transaction.Amount
 			existingCashflow.TotalBalance += transaction.Amount

@@ -16,9 +16,9 @@ const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) =
                 />
             </td>
             <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.type} onChange={e => dispatchChange('type', e.target.value)}>
-                <option>Select...</option>
-                <option>Cash In</option>
-                <option>Cash Out</option>
+                <option disabled>Select...</option>
+                <option value="cashIn">Cash In</option>
+                <option value="cashOut">Cash Out</option>
             </select></td>
             <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.contact} onChange={e => dispatchChange('contact', e.target.value)}>
                 <option>Select...</option>
@@ -30,9 +30,9 @@ const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) =
             </select></td>
             <td className="p-2"><select className="w-full p-1 border rounded" value={transaction.mode} onChange={e => dispatchChange('mode', e.target.value)}>
                 <option disabled>Select...</option>
-                <option>Cash</option>
-                <option>Online method</option>
-                <option>Bank</option>
+                <option value="cash">Cash</option>
+                <option value="online">Online method</option>
+                <option value="bank">Bank</option>
             </select></td>
             <td className="p-2"><input type="text" className="w-full p-1 border rounded" placeholder="Enter remarks" value={transaction.remarks} onChange={e => dispatchChange('remarks', e.target.value)} /></td>
             <td className="p-2 text-center">
@@ -68,8 +68,8 @@ export default function BulkEntry() {
                 contact: '',
                 remarks: '',
                 category: '',
-                type: '',
-                mode: '',
+                type: 'cashIn',
+                mode: 'cash',
             }
         });
         
