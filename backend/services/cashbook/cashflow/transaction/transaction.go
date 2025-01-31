@@ -17,6 +17,7 @@ type TransactionService struct{}
 
 func (t *TransactionService) CreateTransaction(transactionInput *models.TransactionSingleInput) *models.TransactionSingle {
 	newTransactionId := services.GenerateSnowFlake()
+	fmt.Println("Creating new transaction cashbook", transactionInput.CashbookID)
 	newTransaction := &models.TransactionSingleInput{
 		ID:         newTransactionId,
 		VoucherNo:  transactionInput.VoucherNo,
@@ -38,7 +39,6 @@ func (t *TransactionService) CreateTransaction(transactionInput *models.Transact
 		TotalBalance:  0.00,
 		Date:          newTransaction.Date,
 	}
-	fmt.Println(*cashflowUpdate)
 	if newTransaction.Type == "cashin" {
 		cashflowUpdate.TotalIncoming = newTransaction.Amount
 		cashflowUpdate.TotalBalance = newTransaction.Amount
@@ -109,6 +109,7 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 			existingCashflow.TotalBalance -= transaction.Amount
 		}
 		cashflowChanges[dateString] = existingCashflow
+		fmt.Println(*existingCashflow)
 		resp.SuccessCount++
 	}
 	repo := transaction_repo.TransactionRepository{}
@@ -132,7 +133,6 @@ func (t *TransactionService) CreateBulkTransactions(transactions []models.Transa
 		date2, _ := sortedByDate[j].Date.Value()
 		return date1.(time.Time).Before(date2.(time.Time))
 	})
-	fmt.Println(sortedByDate)
 	for _, cashflow := range sortedByDate {
 		_, err := cashflow_repo.CreateOrUpdateCashFlow(db, cashflow)
 		if err != nil {

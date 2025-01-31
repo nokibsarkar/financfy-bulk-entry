@@ -53,6 +53,7 @@ func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions
 		}
 		trs = append(trs, newTransaction)
 	}
+
 	result := db.Create(trs)
 	if result.Error != nil {
 		return nil, result.Error
@@ -70,20 +71,21 @@ func (t *TransactionRepository) ListAllTransactions(db *gorm.DB, filter *models.
 	transactions := []database.Transaction{}
 	stmt := db
 	if filter.CashflowID != "" {
+		fmt.Println("Filtering by cashflow")
 		cashflow := &database.CashFlow{
 			ID: filter.CashflowID,
 		}
-		db.Where(cashflow).First(cashflow)
+		stmt.Where(cashflow).First(cashflow)
 		if cashflow.ID == "" {
 			return nil, fmt.Errorf("Cashflow not found")
 		}
-		stmt = db.Where(database.Transaction{Cashbook: cashflow.CashbookID, Date: cashflow.Date})
+		stmt.Where(&database.Transaction{Cashbook: cashflow.CashbookID, Date: cashflow.Date})
 	}
 	if filter.StartDate != nil {
-		stmt = stmt.Where("date >= ?", filter.StartDate)
+		stmt.Where("date >= ?", filter.StartDate)
 	}
 	if filter.EndDate != nil {
-		stmt = stmt.Where("date < ?", filter.EndDate)
+		stmt.Where("date < ?", filter.EndDate)
 	}
 	result := stmt.Find(&transactions)
 	if result.Error != nil {

@@ -1,5 +1,5 @@
 const baseURL = "http://localhost:8080/api/v1";
-const cashbookID = '1rj4m1je40000';
+
 async function NewCashbook() {
     const res = await fetch(baseURL + "/cashbook", {
         "method": "POST",

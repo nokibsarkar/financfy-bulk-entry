@@ -1,6 +1,5 @@
-import ReturnButton from "@/components/ReturnButton";
-import Server, { BaseURL } from "@/consts/server";
-import { ResponseMultiple } from "@/types/response";
+
+import Server from "@/consts/server";
 import { SingleTransactionProperty } from "@/types/transaction";
 import React from "react";
 const SingleTransactionRow = (p : SingleTransactionProperty) => (
@@ -19,7 +18,7 @@ const SingleTransactionRow = (p : SingleTransactionProperty) => (
     </tr>
 )
 export default async function Transaction({params} : {params : {id : string}}){
-    const {id}= params
+    const {id}= await params
     const res = await Server.getTransactions(id);
     if(res.error){
         return <div>{res.error}</div>

@@ -1,5 +1,5 @@
 'use client'
-import Server from '@/consts/server';
+import Server, { CashbookId } from '@/consts/server';
 import { SingleTransactionInput } from '@/types/transaction';
 import React, { useEffect } from 'react'
 
@@ -43,7 +43,6 @@ const BulkEntryRow = ({ removeRowByID, id, dispatchChange, transaction }: any) =
 }
 export default function BulkEntry() {
     const [refs, setRefs] = React.useState<{ [k: string]: { current: any } }>({});
-    const cashbookID = '1rj4m1je40000';
     const [tableRowMap, setTableRowMap] = React.useState<{ [k: string]: SingleTransactionInput }>({});
     const [date, setDate] = React.useState('');
     const [voucherNo, setVoucherNo] = React.useState('');
@@ -90,7 +89,7 @@ export default function BulkEntry() {
                     mode,
                     date: dateParsed,
                     voucherNo: voucherNo,
-                    cashbookId: cashbookID
+                    cashbookId: CashbookId
                 }
             }) : [];
             Server.addBulkTransactions(data).then(res => {

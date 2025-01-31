@@ -4,7 +4,7 @@ import { ResponseMultiple } from "@/types/response";
 import { SingleTransactionInput, SingleTransactionProperty } from "@/types/transaction";
 
 export const BaseURL = 'https://6fdd-118-179-192-216.ngrok-free.app';
-
+export const CashbookId = '1rj4m5m900000';
 
 class Server {
     static BaseURL = 'https://6fdd-118-179-192-216.ngrok-free.app';

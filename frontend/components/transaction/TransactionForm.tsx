@@ -12,7 +12,7 @@ type AddTransactionFormProps = {
 	reference: string;
 	remarks: string;
 	category: string;
-	receiveMode: string;
+	mode: string;
 	cashbookId: string;
 };
 const AddTransactionForm = ({ type, cashbookId = '' , modeLabel = 'Mode'}: { type: TransactionType, cashbookId: string, modeLabel : string }) => {
@@ -33,7 +33,7 @@ const AddTransactionForm = ({ type, cashbookId = '' , modeLabel = 'Mode'}: { typ
 			"type": type,
 			"amount": Number(amount),
 			"cashbookId": cashbookId,
-			"receiveMode": receiveMode,
+			"mode": receiveMode,
 			"contact": contact,
 			"reference": reference,
 			"remarks": remarks
@@ -49,6 +49,7 @@ const AddTransactionForm = ({ type, cashbookId = '' , modeLabel = 'Mode'}: { typ
 		}).then(a => a.json()).then((a: ResponseMultiple<{ [k: string]: any }>) => {
 			if (!a.error) {
 				alert('Transaction saved successfully');
+				console.log(a);
 			} else {
 				throw new Error(a.error);
 			}
@@ -173,7 +174,7 @@ const AddTransactionForm = ({ type, cashbookId = '' , modeLabel = 'Mode'}: { typ
 					onClick={saveHandler}
 					disabled={loading}
 				>
-					Save
+				{loading?	'Saving...' : 'Save'}
 				</button>
 			</div>
 		</form>
