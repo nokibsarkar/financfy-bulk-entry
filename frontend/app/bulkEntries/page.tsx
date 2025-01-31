@@ -130,17 +130,17 @@ export default function BulkEntry() {
                     </div>
                 </div>
 
-                <table className="w-full border-collapse border rounded-lg overflow-hidden">
+                <table className="w-full border-collapse border  overflow-hidden">
                     <thead>
-                        <tr className="bg-gray-200 text-xs">
-                            <th className="p-2">#</th>
-                            <th className="p-2">Amount *</th>
-                            <th className="p-2">Type *</th>
-                            <th className="p-2">Contact</th>
-                            <th className="p-2">Category *</th>
-                            <th className="p-2">Payment Mode *</th>
-                            <th className="p-2">Remarks</th>
-                            <th className="p-2">Action</th>
+                        <tr className="bg-primary text-white border-collapse text-xs">
+                            <th className="p-2 border">#</th>
+                            <th className="p-2 border">Amount *</th>
+                            <th className="p-2 border">Type *</th>
+                            <th className="p-2 border">Contact</th>
+                            <th className="p-2 border">Category *</th>
+                            <th className="p-2 border">Payment Mode *</th>
+                            <th className="p-2 border">Remarks</th>
+                            <th className="p-2 border">Action</th>
                         </tr>
                     </thead>
                     <tbody>
