@@ -1,4 +1,4 @@
-import Server, { BaseURL } from "@/consts/server";
+import Server, { BaseURL, CashbookId } from "@/consts/server";
 import { SingleCashFlowProperty } from "@/types/cashflow";
 import { ResponseMultiple } from "@/types/response";
 import Link from "next/link";
@@ -20,7 +20,7 @@ const SingleCashFlowRow = (p: SingleCashFlowProperty) => (
 	</tr>
 )
 export default async function CashFlow() {
-	const res: ResponseMultiple<SingleCashFlowProperty> = await Server.getCashflows();
+	const res: ResponseMultiple<SingleCashFlowProperty> = await Server.getCashflows(CashbookId);
 	const cashFlow = res.data;
 	return (
 		<div className="p-6 h-screen bg-white ml-48">
