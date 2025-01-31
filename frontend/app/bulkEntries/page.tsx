@@ -2,32 +2,39 @@
 import React, { useEffect } from 'react'
 
 const BulkEntryRow = ({ ref, removeRowByID, id }: any) => {
-    const [count, setCount] = React.useState(1);
+
     const [type, setType] = React.useState('Cash In');
     const [contact, setContact] = React.useState('Mst Rukaiya Islam Tonni');
     const [category, setCategory] = React.useState('Salary');
     const [receiveMode, setReceiveMode] = React.useState('Cash');
     const [remarks, setRemarks] = React.useState('');
+    const [amount, setAmount] = React.useState('');
     useEffect(() => {
-        if(!ref)
+        if (!ref)
             return;
         if (ref.current)
             return;
         ref.current = {
             getValues: () => ({
-                type,
+                amount,
                 contact,
-                category,
-                receiveMode,
                 remarks,
+                category,
+                type,
+                mode : receiveMode,
             }),
         }
     }, []);
-
     return (
         <tr className="border-b text-xs" id={id}>
             <td className="p-2">1</td>
-            <td className="p-2"><input type="number" className="w-full p-1 border rounded" /></td>
+            <td className="p-2">
+                <input type="number" 
+                className="w-full p-1 border rounded" 
+                value={amount}
+                onChange={e => setAmount(e.target.value)} 
+                />
+            </td>
             <td className="p-2"><select className="w-full p-1 border rounded" value={type} onChange={e => setType(e.target.value)}>
                 <option>Select...</option>
                 <option>Cash In</option>
@@ -56,10 +63,13 @@ const BulkEntryRow = ({ ref, removeRowByID, id }: any) => {
 }
 export default function User() {
     const [rows, setRows] = React.useState<React.ReactNode[]>([]);
-    const [refs, setRefs] = React.useState<{ [k : string] : {current: any }}>({});
+    const [refs, setRefs] = React.useState<{ [k: string]: { current: any } }>({});
+    const cashbookID = '1';
+    const [date, setDate] = React.useState('');
+    const [voucherNo, setVoucherNo] = React.useState('');
     const removeRowByID = (id: string) => () => {
         const ref = refs[id];
-        if(ref && ref.current)
+        if (ref && ref.current)
             delete refs[id];
         setRows(rows.filter((r: any) => r.id !== id));
     }
@@ -70,7 +80,19 @@ export default function User() {
         setRows([...rows, <BulkEntryRow ref={ref} removeRowByID={removeRowByID(uniqueID)} id={uniqueID} key={uniqueID} />]);
     }
     const saveBulkTransaction = () => {
-        const data = refs ? Object.values(refs).map(r => r.current.getValues()) : [];
+        const data = refs ? Object.values(refs).map(r => {
+            const { amount, contact, remarks, category, type, mode } = r.current.getValues();
+            return {
+                amount,
+                contact,
+                remarks,
+                category,
+                type,
+                mode,
+                date : new Date(date).toISOString(),
+                voucherNo : voucherNo,
+            }
+        }) : [];
         console.log(data);
     }
     useEffect(() => {
@@ -84,11 +106,11 @@ export default function User() {
                 <div className="grid grid-cols-2 gap-4 mb-4 text-xs">
                     <div>
                         <label className="block text-sm font-medium">Date & Time *</label>
-                        <input type="datetime-local" className="mt-1 w-full p-2 border rounded" />
+                        <input type="date" className="mt-1 w-full p-2 border rounded" value={date} onChange={e => setDate(e.target.value)} />
                     </div>
                     <div>
                         <label className="block text-sm font-medium">Voucher Number *</label>
-                        <input type="number" className="mt-1 w-full p-2 border rounded" defaultValue="2" />
+                        <input type="number" className="mt-1 w-full p-2 border rounded" value={voucherNo} onChange={e => setVoucherNo(e.target.value)} />
                     </div>
                 </div>
 
