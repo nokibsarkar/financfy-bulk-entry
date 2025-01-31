@@ -34,8 +34,8 @@ export default async function CashFlow() {
 
 			<div className="overflow-x-auto">
 				<table className="w-full border-collapse border border-gray-300 text-xs ">
-					<thead className="bg-gray-100 ">
-						<tr className="text-left text-black">
+					<thead className="bg-primary  ">
+						<tr className="text-left text-white">
 							<th className="border border-gray-300 p-3">DATE</th>
 							<th className="border border-gray-300 p-3 text-center">OPENING BALANCE</th>
 							<th className="border border-gray-300 p-3 text-center">TOTAL IN</th>
