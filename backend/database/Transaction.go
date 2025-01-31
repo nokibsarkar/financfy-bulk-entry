@@ -12,4 +12,5 @@ type Transaction struct {
 	Reference string         `json:"reference" gorm:"not null"`
 	Remarks   string         `json:"remarks" gorm:"not null"`
 	Category  string         `json:"category" gorm:"not null"`
+	Mode      string         `json:"mode" gorm:"not null"`
 }

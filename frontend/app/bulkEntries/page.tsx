@@ -1,4 +1,6 @@
 'use client'
+import Server from '@/consts/server';
+import { SingleTransactionProperty } from '@/types/transaction';
 import React, { useEffect } from 'react'
 
 const BulkEntryRow = ({ ref, removeRowByID, id }: any) => {
@@ -65,6 +67,7 @@ export default function User() {
     const [rows, setRows] = React.useState<React.ReactNode[]>([]);
     const [refs, setRefs] = React.useState<{ [k: string]: { current: any } }>({});
     const cashbookID = '1';
+    const [tableRows, setTableRows] = React.useState<SingleTransactionProperty[]>([]);
     const [date, setDate] = React.useState('');
     const [voucherNo, setVoucherNo] = React.useState('');
     const removeRowByID = (id: string) => () => {
@@ -80,20 +83,21 @@ export default function User() {
         setRows([...rows, <BulkEntryRow ref={ref} removeRowByID={removeRowByID(uniqueID)} id={uniqueID} key={uniqueID} />]);
     }
     const saveBulkTransaction = () => {
-        const data = refs ? Object.values(refs).map(r => {
+        const data : SingleTransactionProperty[] = refs ? Object.values(refs).map(r => {
             const { amount, contact, remarks, category, type, mode } = r.current.getValues();
             return {
+                id : Math.random().toString(36).substring(7),
                 amount,
                 contact,
                 remarks,
                 category,
                 type,
                 mode,
-                date : new Date(date).toISOString(),
+                date : new Date(date || 'now').toISOString(),
                 voucherNo : voucherNo,
             }
         }) : [];
-        console.log(data);
+        Server.addBulkTransactions(data);
     }
     useEffect(() => {
         addRow();

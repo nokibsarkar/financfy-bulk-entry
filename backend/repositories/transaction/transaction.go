@@ -25,6 +25,7 @@ func (t *TransactionRepository) CreateTransaction(db *gorm.DB, transaction *mode
 		Remarks:   transaction.Remarks,
 		Category:  transaction.Category,
 		ID:        services.GenerateSnowFlake(),
+		Mode:      transaction.Mode,
 	}
 	result := db.Create(newTransaction)
 	if result.Error != nil {
@@ -48,6 +49,7 @@ func (t *TransactionRepository) CreateBulkTransactions(db *gorm.DB, transactions
 			Reference: transaction.Reference,
 			Remarks:   transaction.Remarks,
 			Category:  transaction.Category,
+			Mode:      transaction.Mode,
 		}
 		trs = append(trs, newTransaction)
 	}

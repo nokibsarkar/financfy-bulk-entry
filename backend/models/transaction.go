@@ -16,6 +16,7 @@ type TransactionSingle struct {
 	Reference  string         `json:"reference"`
 	Remarks    string         `json:"remarks"`
 	Category   string         `json:"category"`
+	Mode       string         `json:"mode"`
 }
 
 type TransactionSingleInput struct {
@@ -29,6 +30,7 @@ type TransactionSingleInput struct {
 	Remarks    string         `json:"remarks"`
 	Category   string         `json:"category" binding:"required"`
 	Type       string         `json:"type" binding:"required"`
+	Mode       string         `json:"mode" binding:"required"`
 }
 
 type BulkTransactionResponse struct {

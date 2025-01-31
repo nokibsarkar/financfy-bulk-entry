@@ -35,5 +35,12 @@ class Server {
         })
         return res.json();
     }
+    static async addBulkTransactions(data: SingleTransactionProperty[]) {
+        const res = await fetch(BaseURL + "/api/v1/transaction/bulk", {
+            "method": "POST",
+            "body": JSON.stringify(data)
+        });
+        return res.json();
+    }
 }
 export default Server;
