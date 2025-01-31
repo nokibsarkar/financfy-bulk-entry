@@ -1,6 +1,10 @@
 package models
 
-import "gorm.io/datatypes"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 type TransactionSingle struct {
 	ID         string         `json:"id"`
@@ -30,4 +34,9 @@ type TransactionSingleInput struct {
 type BulkTransactionResponse struct {
 	SuccessCount int `json:"successCount"`
 	FailedCount  int `json:"failedCount"`
+}
+type TransactionFilter struct {
+	StartDate  *time.Time `json:"startDate"`
+	EndDate    *time.Time `json:"endDate"`
+	CashflowID string     `json:"cashflowId"`
 }
