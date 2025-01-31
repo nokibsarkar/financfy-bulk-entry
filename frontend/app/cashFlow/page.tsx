@@ -7,7 +7,7 @@ import React from "react";
 const SingleCashFlowRow = (p: SingleCashFlowProperty) => (
 	<tr className='text-black text-center' >
 		<td className='text-black p-3'>
-			<Link href={`transaction/${p.id}`} className="text-primary">{p.date}</Link>
+			<Link href={`cashFlow/${p.id}`} className="text-primary">{p.date}</Link>
 		</td>
 		<td className=' '>{p.openingBalance}</td>
 		<td className=' '>{p.totalIn}</td>
