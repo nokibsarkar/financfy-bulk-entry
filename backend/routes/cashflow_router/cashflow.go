@@ -12,7 +12,7 @@ func ListAllCashFlows(c *gin.Context) {
 	// This function is used to list all the CashFlows of that specific user
 	// return
 	service := cashflow_service.CashFlowService{}
-	CashBookID := c.Query("cashbook_id")
+	CashBookID := c.Query("cashbookId")
 	if CashBookID == "" {
 		CashBookID = "1rj4m1je40000"
 		fmt.Println(CashBookID)

@@ -17,8 +17,11 @@ class Server {
         })
         return res.json();
     }
-    static async getCashflows() : Promise<ResponseMultiple<SingleCashFlowProperty>> {
-        const res = await fetch(Server.BaseURL + '/api/v1/cashflow/', {
+    static async getCashflows(cashbookId : string) : Promise<ResponseMultiple<SingleCashFlowProperty>> {
+        const qs = new URLSearchParams({
+            cashbookId
+        }).toString()
+        const res = await fetch(Server.BaseURL + '/api/v1/cashflow/?' + qs, {
             method: 'GET',
         })
         return res.json();
