@@ -40,7 +40,7 @@ export default function RootLayout({
           
     <ul >
       <li className="mb-2 text-lg text-white"><Link href="/dashboard">Dashboard</Link></li>
-      <li className="mb-2 text-lg text-white"><Link href="/transaction">Transaction</Link> </li>
+      <li className="mb-2 text-lg text-white">Transaction </li>
       <li className="mb-2 pl-7 pt-2 text-sm text-white font-medium"><Link href="/cashFlow">Cash Flow</Link></li>
       <li className="mb-2 pl-7 pt-2 text-sm text-white font-medium"><Link href="/cashIn">Cash In</Link></li>
       <li className="mb-2 pl-7 text-sm text-white font-medium"><Link href="/cashOut">Cash Out</Link></li>

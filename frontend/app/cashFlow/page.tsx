@@ -1,11 +1,14 @@
 import { BaseURL } from "@/consts/server";
 import { SingleCashFlowProperty } from "@/types/cashflow";
 import { ResponseMultiple } from "@/types/response";
+import Link from "next/link";
 import React from "react";
 
 const SingleCashFlowRow = (p: SingleCashFlowProperty) => (
 	<tr className='text-black text-center' >
-		<td className='text-black p-3'>{p.date}</td>
+		<td className='text-black p-3'>
+			<Link href={`transaction/${p.id}`} className="text-primary">{p.date}</Link>
+		</td>
 		<td className=' '>{p.openingBalance}</td>
 		<td className=' '>{p.totalIn}</td>
 		<td className=''>{p.totalOut}</td>
