@@ -9,7 +9,6 @@ export default function User() {
                     <AddTransactionForm type='cashIn' cashbookId={"1rj08gikk0000"} />
                   </div>
     </div>  
-      
          </main>
         
   );
