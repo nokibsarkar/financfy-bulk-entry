@@ -13,7 +13,7 @@ class Server {
             cashflow_id
         }).toString()
         const res = await fetch(Server.BaseURL + '/api/v1/transaction/?' + qs, {
-            method: 'GET'
+            method: 'GET',
         })
         return res.json();
     }
